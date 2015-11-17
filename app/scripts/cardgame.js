@@ -3,8 +3,13 @@
 var CARD_WIDTH = 71;
 var CARD_HEIGHT = 96;
 
+var CANVAS_HEIGHT = 480;
+var CANVAS_WIDTH = 640;
+
 var CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 var CARD_SUITS = ["D", "H", "S", "C"];
+
+var BACKGROUND_COLOR = "#008000";
 
 function drawCardCell(context, x, y) {
   context.beginPath();
@@ -26,7 +31,53 @@ function drawCardCell(context, x, y) {
   context.stroke();
 }
 
-function FreeCell(x, y) {
+function AssetLoader() {
+  var sources = {
+    "cards": "./images/freecell_cards.png",
+    "king": "./images/freecell_king.png"
+  };
+  var sourceCount = Object.keys(sources).length;
+  var loadedImages = 0;
+  var _callback;
+
+  this.images = {};
+
+  var imageLoaded = function() {
+    loadedImages++;
+    if (loadedImages == sourceCount) {
+      _callback();
+    }
+  }
+
+  this.loadAll = function(callback) {
+    _callback = callback;
+    for (var key in sources) {
+      var image = new Image();
+      image.src = sources[key];
+      image.onload = imageLoaded;
+      this.images[key] = image;
+    }
+  }
+}
+
+function Stack(x, y) {
+  this.cards = [];
+
+  this.draw = function(context) {
+    context.fillStyle = BACKGROUND_COLOR;
+    context.fillRect(x, y, CARD_WIDTH, CANVAS_HEIGHT);
+
+    for (var i = 0; i < this.cards.length; i++) {
+      this.cards[i].draw(context, x, y + i * 18);
+    }
+  }
+
+  this.push = function(card) {
+    this.cards.push(card);
+  }
+}
+
+function CellSet(x, y) {
   this.layout = {
     width: CARD_WIDTH * 4,
     height: CARD_HEIGHT
@@ -57,11 +108,7 @@ function FreeCell(x, y) {
   }
 }
 
-function HomeCell(context, x, y) {
-
-}
-
-function KingIcon(context, x, y) {
+function KingIcon(assets, context, x, y) {
   context.beginPath();
   context.moveTo(x, y);
   context.lineTo(x + 38, y);
@@ -80,15 +127,14 @@ function KingIcon(context, x, y) {
   context.strokeStyle = '#000000';
   context.stroke();
 
-  var image = new Image();
-  image.src = "./images/freecell_king.png";
+  var image = assets.images["king"];
 
   this.update = function(type) {
     var pos = 0;
     if (type == "left") {
       pos = 32;
     }
-    context.fillStyle = "#008000";
+    context.fillStyle = BACKGROUND_COLOR;
     context.fillRect(x + 3, y + 3, 32, 32);
     context.drawImage(image, pos, 0, 32, 32, x + 3, y + 3, 32, 32);
   }
@@ -101,7 +147,7 @@ function init(canvasId, width, height) {
   canvas.width = width;
   canvas.height = height;
 
-  context.fillStyle = "#008000";
+  context.fillStyle = BACKGROUND_COLOR;
   context.fillRect(0, 0, width, height);
 
   canvas.onmousemove = function(e) {
@@ -123,7 +169,7 @@ function init(canvasId, width, height) {
   return context;
 }
 
-function Card(number, suit) {
+function Card(assets, number, suit) {
   var getHorizontalPositionGrid = function(number) {
     switch (number) {
       case "A":
@@ -150,6 +196,7 @@ function Card(number, suit) {
         return 3;
     }
   }
+  var image = assets.images["cards"];
 
   this.draw = function(context, x, y) {
     var spriteX = getHorizontalPositionGrid(number);
@@ -158,47 +205,33 @@ function Card(number, suit) {
     spriteX = spriteX * CARD_WIDTH;
     spriteY = spriteY * CARD_HEIGHT;
 
-    context.drawImage(image, spriteX, spriteY, 71, 96, x, y, 71, 96);
-    console.log(getHorizontalPositionGrid(number) + " " + number);
+    context.drawImage(image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH, CARD_HEIGHT);
   }
 }
 
-var context = init("#cardgame", 640, 480);
-// drawCardCell(context, 0, 0);
-// drawCardCell(context, 71, 0);
-// drawCardCell(context, 142, 0);
-// drawCardCell(context, 213, 0);
-var freeCell = new FreeCell(0, 0);
-console.log(freeCell.layout.width);
-console.log(freeCell.layout.height);
+var assets = new AssetLoader();
+assets.loadAll(function() {
+  var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
 
-drawCardCell(context, 339, 0);
-drawCardCell(context, 410, 0);
-drawCardCell(context, 481, 0);
-drawCardCell(context, 552, 0);
+  var freeCell = new CellSet(0, 0);
+  var homeCell = new CellSet(339, 0);
 
-var king = new KingIcon(context, 292, 20);
-var image = new Image();
-image.src = "./images/freecell_cards.png";
-image.onload = function() {
-  // var numbers = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-  // var suits = ["D", "H", "S", "C"];
-  //
-  // for (var i = 0; i < 14; i++) {
-  //   for (var j = 0; j < 4; j++) {
-  //     new Card(context, 8 + j * 152, 120 + i * 18, numbers[i], suits[j]);
-  //   }
-  // }
+  var king = new KingIcon(assets, context, 292, 20);
 
-  freeCell.cards[2] = new Card("A", "C");
-  freeCell.cards[1] = new Card("A", "C");
-  freeCell.cards[3] = new Card("A", "C");
-  freeCell.cards[0] = new Card("A", "C");
+  freeCell.cards[2] = new Card(assets, "K", "C");
+  freeCell.cards[1] = new Card(assets, "Q", "H");
+  freeCell.cards[3] = new Card(assets, "J", "D");
+  freeCell.cards[0] = new Card(assets, "10", "S");
+
+  homeCell.cards[0] = new Card(assets, "A", "C");
 
   king.update();
   freeCell.draw(context);
+  homeCell.draw(context);
 
-  console.log(freeCell.cards);
-}
-
-console.log("Finished code execution");
+  var stack = new Stack(120, 120);
+  stack.push(new Card(assets, "A", "D"));
+  stack.push(new Card(assets, "A", "H"));
+  stack.push(new Card(assets, "Q", "C"));
+  stack.draw(context);
+});
