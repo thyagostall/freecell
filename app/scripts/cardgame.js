@@ -34,6 +34,7 @@ function drawCardCell(context, x, y) {
 function AssetLoader() {
   var sources = {
     "cards": "./images/freecell_cards.png",
+    "selected_cards": "./images/freecell_cards.png",
     "king": "./images/freecell_king.png"
   };
   var sourceCount = Object.keys(sources).length;
@@ -166,6 +167,13 @@ function init(canvasId, width, height) {
     }
   }
 
+  canvas.onclick = function(e) {
+    var x = e.offsetX;
+    var y = e.offsetY;
+
+    console.log(x, y);
+  }
+
   return context;
 }
 
@@ -209,6 +217,7 @@ function Card(assets, number, suit) {
   }
 }
 
+var king;
 var assets = new AssetLoader();
 assets.loadAll(function() {
   var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -216,7 +225,7 @@ assets.loadAll(function() {
   var freeCell = new CellSet(0, 0);
   var homeCell = new CellSet(339, 0);
 
-  var king = new KingIcon(assets, context, 292, 20);
+  king = new KingIcon(assets, context, 292, 20);
 
   freeCell.cards[2] = new Card(assets, "K", "C");
   freeCell.cards[1] = new Card(assets, "Q", "H");
