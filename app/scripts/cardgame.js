@@ -76,6 +76,16 @@ function Stack(x, y) {
   this.push = function(card) {
     this.cards.push(card);
   }
+
+  this.select = function() {
+    var index = this.cards.length - 1;
+    this.cards[index].select();
+  }
+
+  this.deselect = function() {
+    var index = this.cards.length - 1;
+    this.cards[index].deselect();
+  }
 }
 
 function CellSet(x, y) {
@@ -98,13 +108,37 @@ function CellSet(x, y) {
     }
 
     drawCardCell(context, x + CARD_WIDTH * 2, y);
-    if (this.cards[2] !== null) {
+    if (this.cards[2]) {
       this.cards[2].draw(context, x + CARD_WIDTH * 2, y);
     }
 
     drawCardCell(context, x + CARD_WIDTH * 3, y);
     if (this.cards[3]) {
       this.cards[3].draw(context, x + CARD_WIDTH * 3, y);
+    }
+  }
+}
+
+function FreeCell() {
+  var freeCell = new CellSet(0, 0);
+
+  this.layout = freeCell.layout;
+  this.cards = freeCell.cards;
+
+  this.draw = freeCell.draw;
+
+  this.select = function(x, y) {
+    if (x <= CARD_WIDTH * 4) {
+      var i = Math.floor(x / CARD_WIDTH);
+      if (this.cards[i]) {
+        this.cards[i].select();
+      }
+    }
+  }
+
+  this.deselect = function() {
+    for (var i = 0; i < 4; i++) {
+      this.cards[i] && this.cards[i].deselect();
     }
   }
 }
@@ -141,8 +175,10 @@ function KingIcon(assets, context, x, y) {
   }
 }
 
+var canvas;
+
 function init(canvasId, width, height) {
-  var canvas = $(canvasId)[0];
+  canvas = $(canvasId)[0];
   var context = canvas.getContext("2d");
 
   canvas.width = width;
@@ -165,13 +201,6 @@ function init(canvasId, width, height) {
     } else {
       canvas.style.cursor = 'default';
     }
-  }
-
-  canvas.onclick = function(e) {
-    var x = e.offsetX;
-    var y = e.offsetY;
-
-    console.log(x, y);
   }
 
   return context;
@@ -232,18 +261,24 @@ function Card(assets, number, suit) {
   }
 }
 
+function Game() {
+  this.update = function() {
+
+  }
+}
+
 var king;
 var assets = new AssetLoader();
 assets.loadAll(function() {
   var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  var freeCell = new CellSet(0, 0);
+  var freeCell = new FreeCell(0, 0);
   var homeCell = new CellSet(339, 0);
 
   king = new KingIcon(assets, context, 292, 20);
 
   freeCell.cards[2] = new Card(assets, "K", "C");
-  freeCell.cards[1] = new Card(assets, "Q", "H");
+  //freeCell.cards[1] = new Card(assets, "Q", "H");
   freeCell.cards[3] = new Card(assets, "J", "D");
   freeCell.cards[0] = new Card(assets, "10", "S");
 
@@ -259,4 +294,21 @@ assets.loadAll(function() {
   stack.push(new Card(assets, "A", "H"));
   stack.push(new Card(assets, "Q", "C"));
   stack.draw(context);
+
+  canvas.onclick = function(e) {
+    var x = e.offsetX;
+    var y = e.offsetY;
+
+    freeCell.deselect();
+    if (x <= 284 && y <= 96) {
+      freeCell.select(x, y);
+    }
+    freeCell.draw(context);
+
+    stack.deselect();
+    if (x >= 120 && x <= 191 && y >= 120) {
+      stack.select();
+    }
+    stack.draw(context);
+  }
 });
