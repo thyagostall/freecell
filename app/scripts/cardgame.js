@@ -62,6 +62,10 @@ function AssetLoader() {
 }
 
 function Stack(x, y) {
+  var CARD_OFFSET_X = 18;
+  this.x = x;
+  this.y = y;
+
   this.cards = [];
 
   this.draw = function(context) {
@@ -69,7 +73,7 @@ function Stack(x, y) {
     context.fillRect(x, y, CARD_WIDTH, CANVAS_HEIGHT);
 
     for (var i = 0; i < this.cards.length; i++) {
-      this.cards[i].draw(context, x, y + i * 18);
+      this.cards[i].draw(context, x, y + i * CARD_OFFSET_X);
     }
   }
 
@@ -85,6 +89,16 @@ function Stack(x, y) {
   this.deselect = function() {
     var index = this.cards.length - 1;
     this.cards[index].deselect();
+  }
+
+  this.isInside = function(x, y) {
+    var height = CARD_OFFSET_X * (this.cards.length - 1) + CARD_HEIGHT;
+    return (
+      x >= this.x &&
+      x <= this.x + CARD_WIDTH &&
+      y >= this.y &&
+      y <= this.y + height
+    );
   }
 }
 
@@ -310,5 +324,9 @@ assets.loadAll(function() {
       stack.select();
     }
     stack.draw(context);
+
+    if (stack.isInside(x, y)) {
+      console.log("it is inside the stack");
+    }
   }
 });
