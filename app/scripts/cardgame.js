@@ -34,7 +34,7 @@ function drawCardCell(context, x, y) {
 function AssetLoader() {
   var sources = {
     "cards": "./images/freecell_cards.png",
-    "selected_cards": "./images/freecell_cards.png",
+    "selected_cards": "./images/freecell_cards_selected.png",
     "king": "./images/freecell_king.png"
   };
   var sourceCount = Object.keys(sources).length;
@@ -205,6 +205,17 @@ function Card(assets, number, suit) {
     }
   }
   var image = assets.images["cards"];
+  var image_selected = assets.images["selected_cards"];
+
+  var selected = false;
+
+  this.select = function() {
+    selected = true;
+  }
+
+  this.deselect = function() {
+    selected = false;
+  }
 
   this.draw = function(context, x, y) {
     var spriteX = getHorizontalPositionGrid(number);
@@ -213,7 +224,11 @@ function Card(assets, number, suit) {
     spriteX = spriteX * CARD_WIDTH;
     spriteY = spriteY * CARD_HEIGHT;
 
-    context.drawImage(image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH, CARD_HEIGHT);
+    if (selected) {
+      context.drawImage(image_selected, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH, CARD_HEIGHT);
+    } else {
+      context.drawImage(image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH, CARD_HEIGHT);
+    }
   }
 }
 
@@ -232,7 +247,8 @@ assets.loadAll(function() {
   freeCell.cards[3] = new Card(assets, "J", "D");
   freeCell.cards[0] = new Card(assets, "10", "S");
 
-  homeCell.cards[0] = new Card(assets, "A", "C");
+  homeCell.cards[0] = new Card(assets, "A", "D");
+  homeCell.cards[0].select();
 
   king.update();
   freeCell.draw(context);
