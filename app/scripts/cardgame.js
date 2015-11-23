@@ -12,6 +12,9 @@ var CARD_SUITS = ["D", "H", "S", "C"];
 var BACKGROUND_COLOR = "#008000";
 
 function drawCardCell(context, x, y) {
+  context.fillStyle = BACKGROUND_COLOR;
+  context.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+
   context.beginPath();
   context.moveTo(x, y);
   context.lineTo(x + CARD_WIDTH - 1, y);
@@ -81,14 +84,34 @@ function Stack(x, y) {
     this.cards.push(card);
   }
 
-  this.select = function() {
+  this.getSelected = function() {
     var index = this.cards.length - 1;
     this.cards[index].select();
+    return this.cards[index];
+  }
+
+  this.pop = function() {
+    var index = this.cards.length - 1;
+    this.cards[index].deselect();
+    this.cards.pop();
+  }
+
+  this.select = function() {
+    var index = this.cards.length - 1;
+    if (index >= 0) {
+      this.cards[index].select();
+    }
   }
 
   this.deselect = function() {
     var index = this.cards.length - 1;
-    this.cards[index].deselect();
+    if (index >= 0) {
+      this.cards[index].deselect();
+    }
+  }
+
+  this.doesAccept = function(card) {
+    return true;
   }
 
   this.isInside = function(x, y) {
@@ -111,6 +134,10 @@ function CellSet(x, y) {
   }
 
   this.cards = [null, null, null, null];
+  var _this = this;
+  var getCellIndex = function(x) {
+    return Math.floor((x - _this.layout.x) / CARD_WIDTH);
+  }
 
   this.draw = function(context) {
     drawCardCell(context, x, y);
@@ -142,6 +169,34 @@ function CellSet(x, y) {
       y <= this.layout.y + this.layout.height
     );
   }
+
+  this.doesAccept = function(card, x, y) {
+    return true;
+  }
+
+  this.put = function(card, x, y) {
+    var i = getCellIndex(x);
+    this.cards[i] = card;
+  }
+
+  this.remove = function(x, y) {
+    var i = getCellIndex(x);
+    this.cards[i] = null;
+  }
+}
+
+function HomeCell(x, y) {
+  var homeCell = new CellSet(x, y);
+
+  console.log(homeCell.layout);
+
+  this.layout = homeCell.layout;
+  this.cards = homeCell.cards;
+
+  this.draw = homeCell.draw;
+  this.isInside = homeCell.isInside;
+  this.doesAccept = homeCell.doesAccept;
+  this.put = homeCell.put;
 }
 
 function FreeCell() {
@@ -160,6 +215,10 @@ function FreeCell() {
       }
     }
   }
+
+  this.doesAccept = freeCell.doesAccept;
+  this.put = freeCell.put;
+  this.remove = freeCell.remove;
 
   this.deselect = function() {
     for (var i = 0; i < 4; i++) {
@@ -306,15 +365,13 @@ assets.loadAll(function() {
   var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
 
   var freeCell = new FreeCell(0, 0);
-  var homeCell = new CellSet(339, 0);
+  var homeCell = new HomeCell(339, 0);
 
   king = new KingIcon(assets, context, 292, 20);
 
   freeCell.cards[2] = new Card(assets, "KC");
   freeCell.cards[3] = new Card(assets, "JD");
   freeCell.cards[0] = new Card(assets, "TS");
-
-  homeCell.cards[0] = new Card(assets, "AD");
 
   king.update();
   freeCell.draw(context);
@@ -326,13 +383,21 @@ assets.loadAll(function() {
   stack.push(new Card(assets, "QC"));
   stack.draw(context);
 
+  var stack2 = new Stack(240, 120);
+  stack2.push(new Card(assets, "2D"));
+  stack2.push(new Card(assets, "2H"));
+  stack2.push(new Card(assets, "KC"));
+  stack2.draw(context);
+
   canvas.onclick = function(e) {
     var x = e.offsetX;
     var y = e.offsetY;
 
+    var tempCard = new Card(assets, "4C");
+
     freeCell.deselect();
     if (freeCell.isInside(x, y)) {
-      freeCell.select(x, y);
+      freeCell.put(tempCard, x, y);
       console.log("it is inside the freecell");
     }
     freeCell.draw(context);
@@ -342,10 +407,21 @@ assets.loadAll(function() {
       stack.select();
       console.log("it is inside the stack");
     }
+
+    stack2.deselect();
+    if (stack2.isInside(x, y)) {
+      stack2.select();
+      console.log("it is inside the stack 2");
+    }
+
+    stack2.draw(context);
     stack.draw(context);
 
     if (homeCell.isInside(x, y)) {
+      homeCell.put(tempCard, x, y);
       console.log("it is inside the homecell");
     }
+
+    homeCell.draw(context);
   }
 });
