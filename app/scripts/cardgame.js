@@ -6,7 +6,7 @@ var CARD_HEIGHT = 96;
 var CANVAS_HEIGHT = 480;
 var CANVAS_WIDTH = 640;
 
-var CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+var CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
 var CARD_SUITS = ["D", "H", "S", "C"];
 
 var BACKGROUND_COLOR = "#008000";
@@ -105,7 +105,9 @@ function Stack(x, y) {
 function CellSet(x, y) {
   this.layout = {
     width: CARD_WIDTH * 4,
-    height: CARD_HEIGHT
+    height: CARD_HEIGHT,
+    x: x,
+    y: y
   }
 
   this.cards = [null, null, null, null];
@@ -131,6 +133,15 @@ function CellSet(x, y) {
       this.cards[3].draw(context, x + CARD_WIDTH * 3, y);
     }
   }
+
+  this.isInside = function(x, y) {
+    return (
+      x >= this.layout.x &&
+      x <= this.layout.x + this.layout.width &&
+      y >= this.layout.y &&
+      y <= this.layout.y + this.layout.height
+    );
+  }
 }
 
 function FreeCell() {
@@ -154,6 +165,10 @@ function FreeCell() {
     for (var i = 0; i < 4; i++) {
       this.cards[i] && this.cards[i].deselect();
     }
+  }
+
+  this.isInside = function(x, y) {
+    return freeCell.isInside(x, y);
   }
 }
 
@@ -220,11 +235,13 @@ function init(canvasId, width, height) {
   return context;
 }
 
-function Card(assets, number, suit) {
+function Card(assets, code) {
   var getHorizontalPositionGrid = function(number) {
     switch (number) {
       case "A":
         return 0;
+      case "T":
+        return 9;
       case "J":
         return 10;
       case "Q":
@@ -261,6 +278,8 @@ function Card(assets, number, suit) {
   }
 
   this.draw = function(context, x, y) {
+    var number = code.charAt(0);
+    var suit = code.charAt(1);
     var spriteX = getHorizontalPositionGrid(number);
     var spriteY = getVerticalPositionGrid(suit);
 
@@ -291,22 +310,20 @@ assets.loadAll(function() {
 
   king = new KingIcon(assets, context, 292, 20);
 
-  freeCell.cards[2] = new Card(assets, "K", "C");
-  //freeCell.cards[1] = new Card(assets, "Q", "H");
-  freeCell.cards[3] = new Card(assets, "J", "D");
-  freeCell.cards[0] = new Card(assets, "10", "S");
+  freeCell.cards[2] = new Card(assets, "KC");
+  freeCell.cards[3] = new Card(assets, "JD");
+  freeCell.cards[0] = new Card(assets, "TS");
 
-  homeCell.cards[0] = new Card(assets, "A", "D");
-  homeCell.cards[0].select();
+  homeCell.cards[0] = new Card(assets, "AD");
 
   king.update();
   freeCell.draw(context);
   homeCell.draw(context);
 
   var stack = new Stack(120, 120);
-  stack.push(new Card(assets, "A", "D"));
-  stack.push(new Card(assets, "A", "H"));
-  stack.push(new Card(assets, "Q", "C"));
+  stack.push(new Card(assets, "AD"));
+  stack.push(new Card(assets, "AH"));
+  stack.push(new Card(assets, "QC"));
   stack.draw(context);
 
   canvas.onclick = function(e) {
@@ -314,19 +331,21 @@ assets.loadAll(function() {
     var y = e.offsetY;
 
     freeCell.deselect();
-    if (x <= 284 && y <= 96) {
+    if (freeCell.isInside(x, y)) {
       freeCell.select(x, y);
+      console.log("it is inside the freecell");
     }
     freeCell.draw(context);
 
     stack.deselect();
-    if (x >= 120 && x <= 191 && y >= 120) {
+    if (stack.isInside(x, y)) {
       stack.select();
+      console.log("it is inside the stack");
     }
     stack.draw(context);
 
-    if (stack.isInside(x, y)) {
-      console.log("it is inside the stack");
+    if (homeCell.isInside(x, y)) {
+      console.log("it is inside the homecell");
     }
   }
 });
