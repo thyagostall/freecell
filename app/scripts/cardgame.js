@@ -275,22 +275,6 @@ function init(canvasId, width, height) {
   context.fillStyle = BACKGROUND_COLOR;
   context.fillRect(0, 0, width, height);
 
-  canvas.onmousemove = function(e) {
-    var x = e.offsetX;
-    var y = e.offsetY;
-
-    if (y <= 95) {
-      canvas.style.cursor = 'crosshair';
-      if (x < 285) {
-        king.update("left");
-      } else if (x > 339) {
-        king.update("right");
-      }
-    } else {
-      canvas.style.cursor = 'default';
-    }
-  }
-
   return context;
 }
 
@@ -354,74 +338,93 @@ function Card(assets, code) {
 }
 
 function Game() {
-  this.update = function() {
+  var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
 
+  this.drawSelectedCard = function() {
+    if (this.selected) {
+      this.selected.draw(context, CANVAS_WIDTH - CARD_WIDTH - 10, CANVAS_HEIGHT - CARD_HEIGHT - 10);
+    } else {
+      context.fillRect(CANVAS_WIDTH - CARD_WIDTH - 10, CANVAS_HEIGHT - CARD_HEIGHT - 10, CARD_WIDTH, CARD_HEIGHT);
+    }
+  }
+
+  var _this = this;
+  this.init = function() {
+    this.freeCell = new FreeCell(0, 0);
+    this.homeCell = new HomeCell(339, 0);
+
+    this.king = new KingIcon(assets, context, 292, 20);
+
+    this.freeCell.cards[2] = new Card(assets, "KC");
+    this.freeCell.cards[3] = new Card(assets, "JD");
+    this.freeCell.cards[0] = new Card(assets, "TS");
+
+    this.stack = new Stack(120, 120);
+    this.stack.push(new Card(assets, "AD"));
+    this.stack.push(new Card(assets, "AH"));
+    this.stack.push(new Card(assets, "QC"));
+
+    this.stack2 = new Stack(240, 120);
+    this.stack2.push(new Card(assets, "2D"));
+    this.stack2.push(new Card(assets, "2H"));
+    this.stack2.push(new Card(assets, "KC"));
+
+    this.draw();
+    this.king.update("right");
+  }
+
+  this.updateKing = function(x, y) {
+    if (y <= 95) {
+      if (x < 285) {
+        this.king.update("left");
+      } else if (x > 339) {
+        this.king.update("right");
+      }
+    }
+  }
+
+  this.update = function(x, y) {
+    this.freeCell.deselect();
+    this.stack.deselect();
+    this.stack2.deselect();
+
+    if (this.homeCell.isInside(x, y)) {
+      console.log("it is inside the homecell");
+    }
+
+    this.draw();
+  }
+
+  this.checkSelection = function(x, y) {
+
+  }
+
+  this.draw = function() {
+    this.freeCell.draw(context);
+    this.homeCell.draw(context);
+    this.stack.draw(context);
+    this.stack2.draw(context);
+
+    _this.drawSelectedCard();
   }
 }
 
-var king;
 var assets = new AssetLoader();
 assets.loadAll(function() {
-  var context = init("#cardgame", CANVAS_WIDTH, CANVAS_HEIGHT);
+  var game = new Game();
+  game.init();
 
-  var freeCell = new FreeCell(0, 0);
-  var homeCell = new HomeCell(339, 0);
+  canvas.onmousemove = function(e) {
+    var x = e.offsetX;
+    var y = e.offsetY;
 
-  king = new KingIcon(assets, context, 292, 20);
-
-  freeCell.cards[2] = new Card(assets, "KC");
-  freeCell.cards[3] = new Card(assets, "JD");
-  freeCell.cards[0] = new Card(assets, "TS");
-
-  king.update();
-  freeCell.draw(context);
-  homeCell.draw(context);
-
-  var stack = new Stack(120, 120);
-  stack.push(new Card(assets, "AD"));
-  stack.push(new Card(assets, "AH"));
-  stack.push(new Card(assets, "QC"));
-  stack.draw(context);
-
-  var stack2 = new Stack(240, 120);
-  stack2.push(new Card(assets, "2D"));
-  stack2.push(new Card(assets, "2H"));
-  stack2.push(new Card(assets, "KC"));
-  stack2.draw(context);
+    game.updateKing(x, y);
+  }
 
   canvas.onclick = function(e) {
     var x = e.offsetX;
     var y = e.offsetY;
 
-    var tempCard = new Card(assets, "4C");
-
-    freeCell.deselect();
-    if (freeCell.isInside(x, y)) {
-      freeCell.put(tempCard, x, y);
-      console.log("it is inside the freecell");
-    }
-    freeCell.draw(context);
-
-    stack.deselect();
-    if (stack.isInside(x, y)) {
-      stack.select();
-      console.log("it is inside the stack");
-    }
-
-    stack2.deselect();
-    if (stack2.isInside(x, y)) {
-      stack2.select();
-      console.log("it is inside the stack 2");
-    }
-
-    stack2.draw(context);
-    stack.draw(context);
-
-    if (homeCell.isInside(x, y)) {
-      homeCell.put(tempCard, x, y);
-      console.log("it is inside the homecell");
-    }
-
-    homeCell.draw(context);
+    game.update(x, y);
   }
 });
