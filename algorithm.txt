@@ -1,0 +1,64 @@
+Moveable -> interface:
+  //Implement those methods
+  insert(selectedCard, x, y);
+  remove(selectedCard);
+  doesAccept(selectedCard, x, y);
+
+  select(x, y);
+  deselect();
+
+Component -> interface:
+    //Implement those methods
+    insert(selectedCard);
+    remove(selectedCard);
+    doesAccept(selectedCard);
+
+    select();
+    deselect();
+
+    isInside(x, y)
+
+ComponentDictionary -> class:
+    getComponentAt(x, y):
+        for component in components:
+            if component.isInside(x, y)
+                return component
+
+
+    insertComponent(component, x, y)
+
+Game:
+  private selected
+
+  function getComponentAt(x, y)
+
+  //THINK OF DESTINATION_ID AND ORIGIN_ID, CUZ IF THEY ARE THE SAME COMPONENT, BUT DIFFERENT CELLS, THE MESSAGE MUST BE SHOWN!!!
+  //TO SOLVE THE ISSUE ABOVE, LET'S CHANGE HOW HOMECELL AND FREECELL COMPONENTS ARE CONCEIVED.
+  function makeMoves(x, y)
+
+    if (this.selected)
+
+      var destination = getComponentAt(x, y)
+      if (destination)
+        if (destination.doesAccept(selectedCard, x, y))
+          this.destination.put(selectedCard, x, y);
+          this.origin.remove(selectedCard);
+        else
+          if (destinationId != originId)
+            MESSAGE("Impossible execute such move")
+
+        selectedCard.deselect();
+
+        this.selected = undefined
+        this.origin = undefined
+      else
+        this.origin.deselect();
+
+    else
+
+      this.origin = getComponentAt(x, y);
+      this.selectedCard = this.origin.select(x, y);
+
+  function update(x, y)
+    makeMoves(x, y)
+    draw();
