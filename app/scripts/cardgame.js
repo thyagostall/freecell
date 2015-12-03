@@ -11,6 +11,7 @@ var BACKGROUND_COLOR = "#008000";
 
 function Cell(context, x, y) {
   var _card = null;
+  var _selected = false;
 
   this.x = x;
   this.y = y;
@@ -54,10 +55,32 @@ function Cell(context, x, y) {
       y <= this.y + CARD_HEIGHT
     );
   }
+
+  this.select = function() {
+    if (_card) {
+      _selected = true;
+      _card.select();
+    } else {
+      _selected = false;
+    }
+  }
+
+  this.deselect = function() {
+    if (_card) {
+      _card.deselect();
+    }
+    _selected = false;
+  }
+
+  this.isSelected = function() {
+    return _selected;
+  }
 }
 
 function Stack(context, x, y) {
   var CARD_OFFSET_Y = 18;
+  var selected = false;
+
   this.x = x;
   this.y = y;
 
@@ -92,6 +115,7 @@ function Stack(context, x, y) {
     var index = this.cards.length - 1;
     if (index >= 0) {
       this.cards[index].select();
+      selected = true;
     }
   }
 
@@ -99,7 +123,12 @@ function Stack(context, x, y) {
     var index = this.cards.length - 1;
     if (index >= 0) {
       this.cards[index].deselect();
+      selected = false;
     }
+  }
+
+  this.isSelected = function() {
+    return selected;
   }
 
   this.doesAccept = function(card) {
@@ -296,11 +325,11 @@ function Game(canvasId) {
       _stacks[0] = new Stack(_context, 8, 112);
       _stacks[1] = new Stack(_context, 84, 112);
       _stacks[2] = new Stack(_context, 160, 112);
-      _stacks[3] = new Stack(_context, 245, 112);
-      _stacks[4] = new Stack(_context, 324, 112);
-      _stacks[5] = new Stack(_context, 403, 112);
-      _stacks[6] = new Stack(_context, 482, 112);
-      _stacks[7] = new Stack(_context, 561, 112);
+      _stacks[3] = new Stack(_context, 236, 112);
+      _stacks[4] = new Stack(_context, 312, 112);
+      _stacks[5] = new Stack(_context, 388, 112);
+      _stacks[6] = new Stack(_context, 464, 112);
+      _stacks[7] = new Stack(_context, 540, 112);
 
       for (var i = 0; i < _freeCells.length; i++) {
         _componentDict.push(_freeCells[i]);
@@ -313,8 +342,10 @@ function Game(canvasId) {
       }
 
       for (var i = 0; i < 8; i++) {
-        _stacks[i].push(new Card(assets, _context, "KH"));
+        _stacks[i].push(new Card(assets, _context, "KC"));
       }
+
+      _freeCells[0].setCard(new Card(assets, _context, "AD"));
       _this.draw();
 
       _canvas.onmousemove = function(e) {
@@ -334,9 +365,17 @@ function Game(canvasId) {
         var x = e.offsetX;
         var y = e.offsetY;
 
-        console.log(_getComponentAt(x, y));
+        var component = _getComponentAt(x, y);
+        if (component) {
+          if (component.isSelected()) {
+            component.deselect();
+          } else {
+            component.select();
+          }
+        }
 
         _this.update(x, y);
+        _this.draw();
       }
     });
   }
