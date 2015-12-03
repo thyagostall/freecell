@@ -10,8 +10,7 @@ var CARD_SUITS = ["D", "H", "S", "C"];
 var BACKGROUND_COLOR = "#008000";
 
 function Cell(context, x, y) {
-  var _card = null;
-  var _selected = false;
+  this.card = null;
 
   this.x = x;
   this.y = y;
@@ -38,13 +37,13 @@ function Cell(context, x, y) {
     context.strokeStyle = '#00F000';
     context.stroke();
 
-    if (_card) {
-      _card.draw(x, y);
+    if (this.card) {
+      this.card.draw(x, y);
     }
   }
 
   this.setCard = function(card) {
-    _card = card;
+    this.card = card;
   }
 
   this.isInside = function(x, y) {
@@ -55,25 +54,58 @@ function Cell(context, x, y) {
       y <= this.y + CARD_HEIGHT
     );
   }
+}
+
+function HomeCell(context, x, y) {
+  this.prototype = new Cell(context, x, y);
+
+  this.draw = function() {
+    return this.prototype.draw();
+  }
+
+  this.setCard = function(card) {
+    return this.prototype.setCard(card);
+  }
+
+  this.isInside = function(x, y) {
+    return this.prototype.isInside(x, y);
+  }
+}
+
+function FreeCell(context, x, y) {
+  var _selected = false;
+  this.prototype = new Cell(context, x, y);
 
   this.select = function() {
-    if (_card) {
+    if (this.prototype.card) {
       _selected = true;
-      _card.select();
+      this.prototype.card.select();
     } else {
       _selected = false;
     }
   }
 
   this.deselect = function() {
-    if (_card) {
-      _card.deselect();
+    if (this.prototype.card) {
+      this.prototype.card.deselect();
     }
     _selected = false;
   }
 
   this.isSelected = function() {
     return _selected;
+  }
+
+  this.draw = function() {
+    return this.prototype.draw();
+  }
+
+  this.setCard = function(card) {
+    return this.prototype.setCard(card);
+  }
+
+  this.isInside = function(x, y) {
+    return this.prototype.isInside(x, y);
   }
 }
 
@@ -298,6 +330,18 @@ function Game(canvasId) {
     }
   }
 
+  var _isSelectable = function(component) {
+    return component && !(component instanceof HomeCell);
+  }
+
+  var _delesectAll = function() {
+    for (var i = 0; i < _componentDict.length; i++) {
+      if (_isSelectable(_componentDict[i])) {
+        _componentDict[i].deselect();
+      }
+    }
+  }
+
   this.init = function() {
     _canvas = $(canvasId)[0];
     _canvas.width = CANVAS_WIDTH;
@@ -312,15 +356,15 @@ function Game(canvasId) {
       _king = new KingIcon(assets, _context, 292, 20);
       _king.updateRight();
 
-      _freeCells[0] = new Cell(_context, 1, 1);
-      _freeCells[1] = new Cell(_context, 72, 1);
-      _freeCells[2] = new Cell(_context, 143, 1);
-      _freeCells[3] = new Cell(_context, 214, 1);
+      _freeCells[0] = new FreeCell(_context, 1, 1);
+      _freeCells[1] = new FreeCell(_context, 72, 1);
+      _freeCells[2] = new FreeCell(_context, 143, 1);
+      _freeCells[3] = new FreeCell(_context, 214, 1);
 
-      _homeCells[0] = new Cell(_context, 339, 1);
-      _homeCells[1] = new Cell(_context, 410, 1);
-      _homeCells[2] = new Cell(_context, 481, 1);
-      _homeCells[3] = new Cell(_context, 552, 1);
+      _homeCells[0] = new HomeCell(_context, 339, 1);
+      _homeCells[1] = new HomeCell(_context, 410, 1);
+      _homeCells[2] = new HomeCell(_context, 481, 1);
+      _homeCells[3] = new HomeCell(_context, 552, 1);
 
       _stacks[0] = new Stack(_context, 8, 112);
       _stacks[1] = new Stack(_context, 84, 112);
@@ -365,8 +409,10 @@ function Game(canvasId) {
         var x = e.offsetX;
         var y = e.offsetY;
 
+        _delesectAll();
         var component = _getComponentAt(x, y);
-        if (component) {
+        if (_isSelectable(component)) {
+          console.log(component);
           if (component.isSelected()) {
             component.deselect();
           } else {

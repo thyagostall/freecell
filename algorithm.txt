@@ -18,7 +18,7 @@ Component -> interface:
 
     isInside(x, y)
 
-ComponentDictionary -> class:
+OK - ComponentDictionary -> class:
     getComponentAt(x, y):
         for component in components:
             if component.isInside(x, y)
@@ -32,8 +32,6 @@ Game:
 
   function getComponentAt(x, y)
 
-  //THINK OF DESTINATION_ID AND ORIGIN_ID, CUZ IF THEY ARE THE SAME COMPONENT, BUT DIFFERENT CELLS, THE MESSAGE MUST BE SHOWN!!!
-  //TO SOLVE THE ISSUE ABOVE, LET'S CHANGE HOW HOMECELL AND FREECELL COMPONENTS ARE CONCEIVED.
   function makeMoves(x, y)
 
     if (this.selected)
@@ -48,16 +46,17 @@ Game:
             MESSAGE("Impossible execute such move")
 
         selectedCard.deselect();
-
-        this.selected = undefined
-        this.origin = undefined
       else
         this.origin.deselect();
 
-    else
+        this.selected = undefined
+        this.origin = undefined
 
+    else
       this.origin = getComponentAt(x, y);
-      this.selectedCard = this.origin.select(x, y);
+      if (this.origin)
+        this.selectedCard = this.origin.select(x, y);
+
 
   function update(x, y)
     makeMoves(x, y)
