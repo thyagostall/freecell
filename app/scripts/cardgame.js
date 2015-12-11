@@ -42,8 +42,12 @@ function Cell(context, x, y) {
     }
   }
 
-  this.setCard = function(card) {
+  this.push = function(card) {
     this.card = card;
+  }
+
+  this.pop = function() {
+    this.card = null;
   }
 
   this.isInside = function(x, y) {
@@ -63,12 +67,20 @@ function HomeCell(context, x, y) {
     return this.prototype.draw();
   }
 
-  this.setCard = function(card) {
-    return this.prototype.setCard(card);
+  this.push = function(card) {
+    return this.prototype.push(card);
+  }
+
+  this.pop = function() {
+    this.prototype.pop();
   }
 
   this.isInside = function(x, y) {
     return this.prototype.isInside(x, y);
+  }
+
+  this.doesAccept = function() {
+    return true;
   }
 }
 
@@ -77,12 +89,17 @@ function FreeCell(context, x, y) {
   this.prototype = new Cell(context, x, y);
 
   this.select = function() {
+    var result;
+
     if (this.prototype.card) {
       _selected = true;
       this.prototype.card.select();
+      result = this.prototype.card;
     } else {
       _selected = false;
     }
+
+    return result;
   }
 
   this.deselect = function() {
@@ -100,12 +117,20 @@ function FreeCell(context, x, y) {
     return this.prototype.draw();
   }
 
-  this.setCard = function(card) {
-    return this.prototype.setCard(card);
+  this.push = function(card) {
+    return this.prototype.push(card);
+  }
+
+  this.pop = function() {
+    return this.prototype.pop();
   }
 
   this.isInside = function(x, y) {
     return this.prototype.isInside(x, y);
+  }
+
+  this.doesAccept = function() {
+    return true;
   }
 }
 
@@ -131,12 +156,6 @@ function Stack(context, x, y) {
     this.cards.push(card);
   }
 
-  this.getSelected = function() {
-    var index = this.cards.length - 1;
-    this.cards[index].select();
-    return this.cards[index];
-  }
-
   this.pop = function() {
     var index = this.cards.length - 1;
     this.cards[index].deselect();
@@ -148,6 +167,7 @@ function Stack(context, x, y) {
     if (index >= 0) {
       this.cards[index].select();
       selected = true;
+      return this.cards[index];
     }
   }
 
@@ -322,6 +342,11 @@ function Game(canvasId) {
   var _homeCells = [];
   var _stacks = [];
 
+  var _selected;
+
+  var _origin;
+  var _destination;
+
   var _getComponentAt = function(x, y) {
     for (var i = 0; i < _componentDict.length; i++) {
       if (_componentDict[i].isInside(x, y)) {
@@ -331,7 +356,7 @@ function Game(canvasId) {
   }
 
   var _isSelectable = function(component) {
-    return component && !(component instanceof HomeCell);
+    return component && component.select;
   }
 
   var _delesectAll = function() {
@@ -389,7 +414,7 @@ function Game(canvasId) {
         _stacks[i].push(new Card(assets, _context, "KC"));
       }
 
-      _freeCells[0].setCard(new Card(assets, _context, "AD"));
+      _freeCells[0].push(new Card(assets, _context, "AD"));
       _this.draw();
 
       _canvas.onmousemove = function(e) {
@@ -409,21 +434,46 @@ function Game(canvasId) {
         var x = e.offsetX;
         var y = e.offsetY;
 
-        _delesectAll();
-        var component = _getComponentAt(x, y);
-        if (_isSelectable(component)) {
-          console.log(component);
-          if (component.isSelected()) {
-            component.deselect();
-          } else {
-            component.select();
-          }
-        }
+        _this.makeMove(x, y);
 
         _this.update(x, y);
         _this.draw();
       }
     });
+  }
+
+  this.makeMove = function(x, y) {
+    _delesectAll();
+    var component = _getComponentAt(x, y);
+    if (!component) {
+      this._selected.deselect();
+      this._selected = null;
+      return;
+    }
+
+    if (this._selected) {
+      console.log("A card was selected previously");
+      _this.destination = component;
+      if (_this.destination) {
+        if (_this.destination.doesAccept(this._selected)) {
+          _this.destination.push(this._selected);
+          _this.origin.pop();
+        } else {
+          if (_this.destination !== _this.origin) {
+            console.log("impossible move!!");
+          }
+        }
+
+        this._selected.deselect();
+        this._selected = null;
+      }
+    } else {
+      console.log("A card is not selected");
+      _this.origin = component;
+      if (_this.origin) {
+        this._selected = _this.origin.select();
+      }
+    }
   }
 
   this.update = function(x, y) {

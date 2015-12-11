@@ -1,6 +1,6 @@
 Moveable -> interface:
   //Implement those methods
-  insert(selectedCard, x, y);
+  (selectedCard, x, y);
   remove(selectedCard);
   doesAccept(selectedCard, x, y);
 
@@ -9,8 +9,8 @@ Moveable -> interface:
 
 Component -> interface:
     //Implement those methods
-    insert(selectedCard);
-    remove(selectedCard);
+    push(selectedCard);
+    pop(selectedCard);
     doesAccept(selectedCard);
 
     select();
