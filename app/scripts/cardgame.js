@@ -130,7 +130,11 @@ function FreeCell(context, x, y) {
   }
 
   this.doesAccept = function() {
-    return true;
+    return !this.prototype.card;
+  }
+
+  this.isBusy = function() {
+    return this.prototype.card;
   }
 }
 
@@ -350,6 +354,16 @@ function Game(canvasId) {
 
   var _origin;
 
+  var _countFreeCells = function() {
+    var result = 0;
+    for (var i = 0; i < _freeCells.length; i++) {
+      if (!_freeCells[i].isBusy()) {
+        result++;
+      }
+    }
+    return result;
+  }
+
   var _getComponentAt = function(x, y) {
     for (var i = 0; i < _componentDict.length; i++) {
       if (_componentDict[i].isInside(x, y)) {
@@ -366,6 +380,14 @@ function Game(canvasId) {
     for (var i = 0; i < _componentDict.length; i++) {
       if (_isSelectable(_componentDict[i])) {
         _componentDict[i].deselect();
+      }
+    }
+  }
+
+  var _findFreeCell = function() {
+    for (var i = 0; i < _freeCells.length; i++) {
+      if (!_freeCells[i].isBusy()) {
+        return _freeCells[i];
       }
     }
   }
@@ -441,19 +463,32 @@ function Game(canvasId) {
         var y = e.offsetY;
 
         _this.makeMove(x, y);
-
-        _this.update(x, y);
         _this.draw();
       }
 
-      _canvas.ondblclick = function() {
-        _this.moveToFreeCell();
+      _canvas.ondblclick = function(e) {
+        var x = e.offsetX;
+        var y = e.offsetY;
+
+        _this.moveToFreeCell(x, y);
+        _this.draw();
       }
     });
   }
 
-  this.moveToFreeCell = function() {
+  this.moveToFreeCell = function(x, y) {
+    if (this._selected) {
+      return;
+    }
 
+    var destination = _findFreeCell();
+    if (destination) {
+      this.origin = _getComponentAt(x, y);
+      if (this.origin) {
+        this._selected = this.origin.select();
+      }
+      this.move(destination);
+    }
   }
 
   this.move = function(destination) {
@@ -462,6 +497,7 @@ function Game(canvasId) {
       qty = this.origin.streakSize;
     }
 
+    qty = Math.min(qty, _countFreeCells() + 1);
     var temp = [];
 
     for (var i = 0; i < qty; i++) {
@@ -500,6 +536,11 @@ function Game(canvasId) {
             console.log("impossible move!!");
           }
         }
+
+        if (this._selected) {
+          this._selected.deselect();
+          this._selected = null;
+        }
       }
     } else {
       this.origin = component;
@@ -507,10 +548,6 @@ function Game(canvasId) {
         this._selected = this.origin.select();
       }
     }
-  }
-
-  this.update = function(x, y) {
-
   }
 
   this.draw = function() {
