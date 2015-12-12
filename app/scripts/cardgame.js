@@ -138,6 +138,8 @@ function Stack(context, x, y) {
   var CARD_OFFSET_Y = 18;
   var selected = false;
 
+  this.streakSize = 0;
+
   this.x = x;
   this.y = y;
 
@@ -154,12 +156,14 @@ function Stack(context, x, y) {
 
   this.push = function(card) {
     this.cards.push(card);
+    this.streakSize++;
   }
 
   this.pop = function() {
     var index = this.cards.length - 1;
     this.cards[index].deselect();
     this.cards.pop();
+    this.streakSize--;
   }
 
   this.select = function() {
@@ -345,7 +349,6 @@ function Game(canvasId) {
   var _selected;
 
   var _origin;
-  var _destination;
 
   var _getComponentAt = function(x, y) {
     for (var i = 0; i < _componentDict.length; i++) {
@@ -413,6 +416,9 @@ function Game(canvasId) {
       for (var i = 0; i < 8; i++) {
         _stacks[i].push(new Card(assets, _context, "KC"));
       }
+      _stacks[0].push(new Card(assets, _context, "QD"));
+      _stacks[0].push(new Card(assets, _context, "JC"));
+      _stacks[0].push(new Card(assets, _context, "TD"));
 
       _freeCells[0].push(new Card(assets, _context, "AD"));
       _this.draw();
@@ -439,7 +445,40 @@ function Game(canvasId) {
         _this.update(x, y);
         _this.draw();
       }
+
+      _canvas.ondblclick = function() {
+        _this.moveToFreeCell();
+      }
     });
+  }
+
+  this.moveToFreeCell = function() {
+
+  }
+
+  this.move = function(destination) {
+    var qty = 1;
+    if (this.origin instanceof Stack && destination instanceof Stack) {
+      qty = this.origin.streakSize;
+    }
+
+    var temp = [];
+
+    for (var i = 0; i < qty; i++) {
+      temp.push(this._selected);
+      this.origin.pop();
+      this._selected.deselect();
+      this._selected = this.origin.select();
+    }
+
+    for (var i = 0; i < qty; i++) {
+      destination.push(temp.pop());
+    }
+
+    if (this._selected) {
+      this._selected.deselect();
+      this._selected = null;
+    }
   }
 
   this.makeMove = function(x, y) {
@@ -452,26 +491,20 @@ function Game(canvasId) {
     }
 
     if (this._selected) {
-      console.log("A card was selected previously");
-      _this.destination = component;
-      if (_this.destination) {
-        if (_this.destination.doesAccept(this._selected)) {
-          _this.destination.push(this._selected);
-          _this.origin.pop();
+      var destination = component;
+      if (destination) {
+        if (destination.doesAccept(this._selected)) {
+          this.move(destination);
         } else {
-          if (_this.destination !== _this.origin) {
+          if (destination !== this.origin) {
             console.log("impossible move!!");
           }
         }
-
-        this._selected.deselect();
-        this._selected = null;
       }
     } else {
-      console.log("A card is not selected");
-      _this.origin = component;
-      if (_this.origin) {
-        this._selected = _this.origin.select();
+      this.origin = component;
+      if (this.origin) {
+        this._selected = this.origin.select();
       }
     }
   }
