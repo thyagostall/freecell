@@ -5,7 +5,7 @@ var CANVAS_HEIGHT = 480;
 var CANVAS_WIDTH = 640;
 
 var CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
-var CARD_SUITS = ["D", "H", "S", "C"];
+var CARD_SUITS = ["D", "S", "H", "C"];
 
 var BACKGROUND_COLOR = "#008000";
 
@@ -79,8 +79,12 @@ function HomeCell(context, x, y) {
     return this.prototype.isInside(x, y);
   }
 
-  this.doesAccept = function() {
-    return true;
+  this.doesAccept = function(card) {
+    if (card.number === "A") {
+      return true;
+    } else {
+      return isNextSameSuit(card);
+    }
   }
 }
 
@@ -192,7 +196,11 @@ function Stack(context, x, y) {
   }
 
   this.doesAccept = function(card) {
-    return true;
+    if (this.cards.length === 0) {
+      return true;
+    }
+    var last = this.cards.length - 1;
+    return isPreviousInvertedSuit(this.cards[last], card);
   }
 
   this.isInside = function(x, y) {
@@ -247,6 +255,9 @@ function KingIcon(assets, context, x, y) {
 }
 
 function Card(assets, context, code) {
+  this.number = code.charAt(0);
+  this.suit = code.charAt(1);
+
   var getHorizontalPositionGrid = function(number) {
     switch (number) {
       case "A":
@@ -293,10 +304,8 @@ function Card(assets, context, code) {
   }
 
   this.draw = function(x, y) {
-    var number = code.charAt(0);
-    var suit = code.charAt(1);
-    var spriteX = getHorizontalPositionGrid(number);
-    var spriteY = getVerticalPositionGrid(suit);
+    var spriteX = getHorizontalPositionGrid(this.number);
+    var spriteY = getVerticalPositionGrid(this.suit);
 
     spriteX = spriteX * CARD_WIDTH;
     spriteY = spriteY * CARD_HEIGHT;
@@ -337,6 +346,41 @@ function AssetLoader() {
       this.images[key] = image;
     }
   }
+}
+
+function getColor(suit) {
+  var suitIndex = CARD_SUITS.indexOf(suit);
+  if (suitIndex % 2) {
+    return "Black";
+  } else {
+    return "Red";
+  }
+}
+
+function isNextSameSuit(current, candidate) {
+  if (current.number === "K") {
+    return false;
+  }
+
+  var nextNumber = CARD_VALUES.indexOf(current.number);
+  nextNumber++;
+  nextNumber = CARD_VALUES[nextNumber];
+
+  return nextNumber === candidate.number && current.suit === candidate.suit;
+}
+
+function isPreviousInvertedSuit(current, candidate) {
+  if (current.number === "A") {
+    return false;
+  }
+
+  var previousNumber = CARD_VALUES.indexOf(current.number);
+  previousNumber--;
+  previousNumber = CARD_VALUES[previousNumber];
+
+  var result = previousNumber === candidate.number;
+  result &= getColor(current.suit) !== getColor(candidate.suit);
+  return result;
 }
 
 function Game(canvasId) {
