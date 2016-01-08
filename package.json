@@ -23,6 +23,8 @@
     "grunt-svgmin": "^2.0.1",
     "grunt-usemin": "^3.0.0",
     "grunt-wiredep": "^2.0.0",
+    "gulp": "^3.9.0",
+    "gulp-connect": "^2.3.1",
     "jit-grunt": "^0.9.1",
     "time-grunt": "^1.1.0"
   },
