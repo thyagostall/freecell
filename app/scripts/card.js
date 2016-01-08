@@ -1,6 +1,6 @@
 "use strict";
 
-function Card(assets, ctx, code) {
+function Card(assets, context, code) {
     this.number = code.charAt(0);
     this.suit = code.charAt(1);
 
@@ -8,7 +8,7 @@ function Card(assets, ctx, code) {
     this.image_selected = assets.images["selected_cards"];
 
     this.selected = false;
-    this.context = ctx;
+    this.context = context;
 }
 
 Card.prototype._getHorizontalPositionGrid = function(number) {
@@ -42,27 +42,27 @@ Card.prototype._getVerticalPositionGrid = function(suit) {
 }
 
 Card.prototype.select = function() {
-    selected = true;
+    this.selected = true;
 }
 
 Card.prototype.deselect = function() {
-    selected = false;
+    this.selected = false;
 }
 
 Card.prototype.isSelected = function() {
-    return selected;
+    return this._selected;
 }
 
 Card.prototype.draw = function(x, y) {
-    var spriteX = getHorizontalPositionGrid(this.number);
-    var spriteY = getVerticalPositionGrid(this.suit);
+    var spriteX = this._getHorizontalPositionGrid(this.number);
+    var spriteY = this._getVerticalPositionGrid(this.suit);
 
     spriteX = spriteX * CARD_WIDTH;
     spriteY = spriteY * CARD_HEIGHT;
 
-    if (selected) {
-        context.drawImage(image_selected, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH - 1, CARD_HEIGHT - 1);
+    if (this.selected) {
+        this.context.drawImage(this.image_selected, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH - 1, CARD_HEIGHT - 1);
     } else {
-        context.drawImage(image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH - 1, CARD_HEIGHT - 1);
+        this.context.drawImage(this.image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH - 1, CARD_HEIGHT - 1);
     }
 }
