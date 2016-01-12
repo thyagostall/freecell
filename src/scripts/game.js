@@ -1,13 +1,4 @@
-var CARD_WIDTH = 71;
-var CARD_HEIGHT = 96;
-
-var CANVAS_HEIGHT = 480;
-var CANVAS_WIDTH = 640;
-
-var CARD_VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
-var CARD_SUITS = ['D', 'S', 'H', 'C'];
-
-var BACKGROUND_COLOR = '#008000';
+'use strict';
 
 function Cell(context, x, y) {
 	this.card = null;
@@ -142,78 +133,6 @@ function FreeCell(context, x, y) {
 	};
 }
 
-function Stack(context, x, y) {
-	var CARD_OFFSET_Y = 18;
-	var selected = false;
-
-	this.streakSize = 0;
-
-	this.x = x;
-	this.y = y;
-
-	this.cards = [];
-
-	this.draw = function() {
-		context.fillStyle = BACKGROUND_COLOR;
-		context.fillRect(x, y, CARD_WIDTH, CANVAS_HEIGHT);
-
-		for (var i = 0; i < this.cards.length; i++) {
-			this.cards[i].draw(x, y + i * CARD_OFFSET_Y);
-		}
-	};
-
-	this.push = function(card) {
-		this.cards.push(card);
-		this.streakSize++;
-	};
-
-	this.pop = function() {
-		var index = this.cards.length - 1;
-		this.cards[index].deselect();
-		this.cards.pop();
-		this.streakSize--;
-	};
-
-	this.select = function() {
-		var index = this.cards.length - 1;
-		if (index >= 0) {
-			this.cards[index].select();
-			selected = true;
-			return this.cards[index];
-		}
-	};
-
-	this.deselect = function() {
-		var index = this.cards.length - 1;
-		if (index >= 0) {
-			this.cards[index].deselect();
-			selected = false;
-		}
-	};
-
-	this.isSelected = function() {
-		return selected;
-	};
-
-	this.doesAccept = function(card) {
-		if (this.cards.length === 0) {
-			return true;
-		}
-		var last = this.cards.length - 1;
-		return isPreviousInvertedSuit(this.cards[last], card);
-	};
-
-	this.isInside = function(x, y) {
-		var height = CARD_OFFSET_Y * (this.cards.length - 1) + CARD_HEIGHT;
-		return (
-			x >= this.x &&
-			x <= this.x + CARD_WIDTH &&
-			y >= this.y &&
-			y <= this.y + height
-		);
-	};
-}
-
 function KingIcon(assets, context, x, y) {
 	context.beginPath();
 	context.moveTo(x, y);
@@ -284,41 +203,6 @@ function AssetLoader() {
 	};
 }
 
-function getColor(suit) {
-	var suitIndex = CARD_SUITS.indexOf(suit);
-	if (suitIndex % 2) {
-		return 'Black';
-	} else {
-		return 'Red';
-	}
-}
-
-function isNextSameSuit(current, candidate) {
-	if (current.number === 'K') {
-		return false;
-	}
-
-	var nextNumber = CARD_VALUES.indexOf(current.number);
-	nextNumber++;
-	nextNumber = CARD_VALUES[nextNumber];
-
-	return nextNumber === candidate.number && current.suit === candidate.suit;
-}
-
-function isPreviousInvertedSuit(current, candidate) {
-	if (current.number === 'A') {
-		return false;
-	}
-
-	var previousNumber = CARD_VALUES.indexOf(current.number);
-	previousNumber--;
-	previousNumber = CARD_VALUES[previousNumber];
-
-	var result = previousNumber === candidate.number;
-	result &= getColor(current.suit) !== getColor(candidate.suit);
-	return result;
-}
-
 function Game(canvasId) {
 	var _this = this;
 	var _canvas;
@@ -372,7 +256,7 @@ function Game(canvasId) {
 		var i;
 
 		_canvas = $(canvasId)[0];
-		_canvas.width = CANVAS_WIDTH;
+ 		_canvas.width = CANVAS_WIDTH;
 		_canvas.height = CANVAS_HEIGHT;
 
 		_context = _canvas.getContext('2d');
