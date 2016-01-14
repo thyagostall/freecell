@@ -151,6 +151,8 @@ function Game(canvasId) {
 	};
 
 	this.move = function(destination) {
+		return;
+		
 		var i;
 		var qty = 1;
 		if (this.origin instanceof Stack && destination instanceof Stack) {
@@ -181,32 +183,27 @@ function Game(canvasId) {
 		_delesectAll();
 		var component = _getComponentAt(x, y);
 		if (!component) {
-			this._selected.deselect();
 			this._selected = null;
 			return;
 		}
 
-		if (this._selected) {
+		if (this.origin) {
 			var destination = component;
 			if (destination) {
-				if (destination.doesAccept(this._selected)) {
-					this.move(destination);
-				} else {
-					if (destination !== this.origin) {
-						console.log('impossible move!!');
-					}
+				var acceptableStreak = destination.howManyAcceptables(this.origin);
+				console.log(acceptableStreak);
+				if (acceptableStreak > 0) {
+					this.move(destination, acceptableStreak);
+				} else if (destination !== this.origin) {
+					console.log('impossible move!!');
+					// @TODO Insert a callback here
 				}
 
-				if (this._selected) {
-					this._selected.deselect();
-					this._selected = null;
-				}
+				this.origin = null;
 			}
 		} else {
 			this.origin = component;
-			if (this.origin) {
-				this._selected = this.origin.select();
-			}
+			this.origin.select();
 		}
 	};
 

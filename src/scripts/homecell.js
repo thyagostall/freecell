@@ -10,10 +10,15 @@ HomeCell.prototype = new Cell(this._context, this._x, this._y);
 HomeCell.prototype.constructor = HomeCell;
 
 
-HomeCell.prototype.doesAccept = function(card) {
-	if (card.number === 'A') {
-		return true;
+HomeCell.prototype.howManyAcceptables = function(origin) {
+	if (origin.cards.length == 0) {
+		return 0;
+	}
+	
+	var card = origin.cards[0]
+	if (card.number === 'A' || isNextSameSuit(card)) {
+		return 1;
 	} else {
-		return isNextSameSuit(card);
+		return 0;
 	}
 };

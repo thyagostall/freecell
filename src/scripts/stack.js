@@ -61,12 +61,19 @@ Stack.prototype.isSelected = function() {
 	return this._selected;
 };
 
-Stack.prototype.doesAccept = function(card) {
+Stack.prototype.howManyAcceptables = function(origin) {
+	var cards = origin.cards;
 	if (this.cards.length === 0) {
-		return true;
+		return cards.length;
 	}
-	var last = this.cards.length - 1;
-	return isPreviousInvertedSuit(this.cards[last], card);
+	
+	var last = this.cards.length - 1;	
+	for (var i = cards.length - 1; i >= 0; i--) {
+		if (isPreviousInvertedSuit(this.cards[last], cards[i])) {
+			return cards.length - i;
+		}
+	}
+	return 0;
 };
 
 Stack.prototype.isInside = function(x, y) {

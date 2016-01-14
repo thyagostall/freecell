@@ -14,10 +14,10 @@ FreeCell.prototype.constructor = FreeCell;
 FreeCell.prototype.select = function() {
 	var result;
 
-	if (this.card) {
+	if (this.cards.length > 0) {
 		this._selected = true;
-		this.card.select();
-		result = this.card;
+		this.cards[0].select();
+		result = this.cards[0];
 	} else {
 		this._selected = false;
 	}
@@ -26,8 +26,8 @@ FreeCell.prototype.select = function() {
 };
 
 FreeCell.prototype.deselect = function() {
-	if (this.card) {
-		this.card.deselect();
+	if (this.cards.length > 0) {
+		this.cards[0].deselect();
 	}
 	this._selected = false;
 };
@@ -36,8 +36,8 @@ FreeCell.prototype.isSelected = function() {
 	return this._selected;
 };	
 
-FreeCell.prototype.doesAccept = function() {
-	return !this.card;
+FreeCell.prototype.howManyAcceptables = function() {
+	return 1 - this.cards.length;
 };
 
 FreeCell.prototype.isBusy = function() {

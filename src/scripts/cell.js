@@ -1,7 +1,7 @@
 'use strict';
 
 function Cell(context, x, y) {
-	this.card = null;
+	this.cards = [];
 
 	this._context = context;
 	this._x = x;
@@ -35,17 +35,17 @@ Cell.prototype.draw = function() {
 	context.strokeStyle = '#00F000';
 	context.stroke();
 
-	if (this.card) {
-		this.card.draw(x, y);
+	if (this.cards.length > 0) {
+		this.cards[0].draw(x, y);
 	}
 };
 
 Cell.prototype.push = function(card) {
-	this.card = card;
+	this.cards = [card];
 };
 
 Cell.prototype.pop = function() {
-	this.card = null;
+	this.cards = [];
 };
 
 Cell.prototype.isInside = function(x, y) {
