@@ -193,7 +193,7 @@ function Game(canvasId) {
 					this.move(destination);
 				} else {
 					if (destination !== this.origin) {
-						// console.log('impossible move!!');
+						console.log('impossible move!!');
 					}
 				}
 
