@@ -150,38 +150,18 @@ function Game(canvasId) {
 		}
 	};
 
-	this.move = function(destination) {
-		return;
-		
-		var i;
-		var qty = 1;
-		if (this.origin instanceof Stack && destination instanceof Stack) {
-			qty = this.origin.streakSize;
-		}
-
+	this.move = function(destination, qty) {
 		qty = Math.min(qty, _countFreeCells() + 1);
-		var temp = [];
 
-		for (i = 0; i < qty; i++) {
-			temp.push(this._selected);
-			this.origin.pop();
-			this._selected.deselect();
-			this._selected = this.origin.select();
-		}
-
-		for (i = 0; i < qty; i++) {
-			destination.push(temp.pop());
-		}
-
-		if (this._selected) {
-			this._selected.deselect();
-			this._selected = null;
-		}
+		var len = this.origin.cards.length;
+		var cards = this.origin.cards.splice(len - qty);
+		destination.cards = destination.cards.concat(cards);
 	};
 
 	this.makeMove = function(x, y) {
 		_delesectAll();
 		var component = _getComponentAt(x, y);
+		console.log("comp: " + component);
 		if (!component) {
 			this._selected = null;
 			return;
@@ -196,7 +176,6 @@ function Game(canvasId) {
 					this.move(destination, acceptableStreak);
 				} else if (destination !== this.origin) {
 					console.log('impossible move!!');
-					// @TODO Insert a callback here
 				}
 
 				this.origin = null;
