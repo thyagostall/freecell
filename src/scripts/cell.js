@@ -40,14 +40,6 @@ Cell.prototype.draw = function() {
 	}
 };
 
-Cell.prototype.push = function(card) {
-	this.cards = [card];
-};
-
-Cell.prototype.pop = function() {
-	this.cards = [];
-};
-
 Cell.prototype.isInside = function(x, y) {
 	return (
 		x >= this._x &&

@@ -1,12 +1,14 @@
 'use strict';
 
 function HomeCell(context, x, y) {
+	this.cards = [];
+
 	this._context = context;
 	this._x = x;
 	this._y = y;
 }
 
-HomeCell.prototype = new Cell(this._context, this._x, this._y);
+HomeCell.prototype = Object.create(Cell.prototype);
 HomeCell.prototype.constructor = HomeCell;
 
 

@@ -2,13 +2,14 @@
 
 function FreeCell(context, x, y) {
 	this._selected = false;
+	this.cards = [];
 
 	this._context = context;
 	this._x = x;
 	this._y = y;
 }	
 
-FreeCell.prototype = new Cell(this._context, this._x, this._y);
+FreeCell.prototype = Object.create(Cell.prototype);
 FreeCell.prototype.constructor = FreeCell;
 
 FreeCell.prototype.select = function() {
@@ -41,5 +42,5 @@ FreeCell.prototype.howManyAcceptables = function() {
 };
 
 FreeCell.prototype.isBusy = function() {
-	return this.card;
+	return this.cards.length !== 0;
 };

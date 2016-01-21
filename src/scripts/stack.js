@@ -28,18 +28,6 @@ Stack.prototype.draw = function() {
 	}
 };
 
-Stack.prototype.push = function(card) {
-	this.cards.push(card);
-	this.streakSize++;
-};
-
-Stack.prototype.pop = function() {
-	var index = this.cards.length - 1;
-	this.cards[index].deselect();
-	this.cards.pop();
-	this.streakSize--;
-};
-
 Stack.prototype.select = function() {
 	var index = this.cards.length - 1;
 	if (index >= 0) {

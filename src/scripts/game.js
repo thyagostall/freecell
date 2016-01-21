@@ -15,6 +15,7 @@ function Game(canvasId) {
 		var result = 0;
 		for (var i = 0; i < _freeCells.length; i++) {
 			if (!_freeCells[i].isBusy()) {
+				console.log('i: ' + i + '-->' + _freeCells[i].isBusy());
 				result++;
 			}
 		}
@@ -95,13 +96,13 @@ function Game(canvasId) {
 			}
 
 			for (i = 0; i < 8; i++) {
-				_stacks[i].push(new Card(assets, _context, 'KC'));
+				_stacks[i].cards.push(new Card(assets, _context, 'KC'));
 			}
-			_stacks[0].push(new Card(assets, _context, 'QD'));
-			_stacks[0].push(new Card(assets, _context, 'JC'));
-			_stacks[0].push(new Card(assets, _context, 'TD'));
+			_stacks[0].cards.push(new Card(assets, _context, 'QD'));
+			_stacks[0].cards.push(new Card(assets, _context, 'JC'));
+			_stacks[0].cards.push(new Card(assets, _context, 'TD'));
 
-			_freeCells[0].push(new Card(assets, _context, 'AD'));
+			_freeCells[0].cards.push(new Card(assets, _context, 'AD'));
 			_this.draw();
 
 			_canvas.onmousemove = function(e) {
@@ -161,7 +162,6 @@ function Game(canvasId) {
 	this.makeMove = function(x, y) {
 		_delesectAll();
 		var component = _getComponentAt(x, y);
-		console.log("comp: " + component);
 		if (!component) {
 			this._selected = null;
 			return;
@@ -171,7 +171,6 @@ function Game(canvasId) {
 			var destination = component;
 			if (destination) {
 				var acceptableStreak = destination.howManyAcceptables(this.origin);
-				console.log(acceptableStreak);
 				if (acceptableStreak > 0) {
 					this.move(destination, acceptableStreak);
 				} else if (destination !== this.origin) {
