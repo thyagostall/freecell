@@ -15,7 +15,6 @@ function Game(canvasId) {
 		var result = 0;
 		for (var i = 0; i < _freeCells.length; i++) {
 			if (!_freeCells[i].isBusy()) {
-				console.log('i: ' + i + '-->' + _freeCells[i].isBusy());
 				result++;
 			}
 		}
@@ -127,11 +126,11 @@ function Game(canvasId) {
 			};
 
 			_canvas.ondblclick = function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				// var x = e.offsetX;
+				// var y = e.offsetY;
 
-				_this.moveToFreeCell(x, y);
-				_this.draw();
+				// _this.moveToFreeCell(x, y);
+				// _this.draw();
 			};
 		});
 	};
