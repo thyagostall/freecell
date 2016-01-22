@@ -49,14 +49,14 @@ Stack.prototype.isSelected = function() {
 	return this._selected;
 };
 
-Stack.prototype.howManyAcceptables = function(origin) {
+Stack.prototype.howManyAcceptables = function(origin, max) {
 	var cards = origin.cards;
 	if (this.cards.length === 0) {
-		return cards.length;
+		return Math.min(cards.length, max);
 	}
 	
 	var last = this.cards.length - 1;	
-	for (var i = cards.length - 1; i >= 0; i--) {
+	for (var i = cards.length - 1; i >= cards.length - max; i--) {
 		if (isPreviousInvertedSuit(this.cards[last], cards[i])) {
 			return cards.length - i;
 		}

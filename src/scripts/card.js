@@ -1,8 +1,16 @@
 'use strict';
 
 function Card(assets, context, code) {
-	this.number = code.charAt(0);
-	this.suit = code.charAt(1);
+	if (typeof code === 'string') {
+		this.rank = code.charAt(0);
+		this.suit = code.charAt(1);
+	} else {
+		this.rank = code / 4;
+		this.suit = code % 4;
+
+		this.rank = CARD_VALUES.charAt(this.rank);
+		this.suit = CARD_VALUES.charAt(this.suit);
+	}
 
 	this.image = assets.images['cards'];
 	this.image_selected = assets.images['selected_cards'];
@@ -11,8 +19,8 @@ function Card(assets, context, code) {
 	this.context = context;
 }
 
-Card.prototype._getHorizontalPositionGrid = function(number) {
-	switch (number) {
+Card.prototype._getHorizontalPositionGrid = function(rank) {
+	switch (rank) {
 	case 'A':
 		return 0;
 	case 'T':
@@ -24,7 +32,7 @@ Card.prototype._getHorizontalPositionGrid = function(number) {
 	case 'K':
 		return 12;
 	default:
-		return parseInt(number) - 1;
+		return parseInt(rank) - 1;
 	}
 };
 
@@ -54,7 +62,7 @@ Card.prototype.isSelected = function() {
 };
 
 Card.prototype.draw = function(x, y) {
-	var spriteX = this._getHorizontalPositionGrid(this.number);
+	var spriteX = this._getHorizontalPositionGrid(this.rank);
 	var spriteY = this._getVerticalPositionGrid(this.suit);
 
 	spriteX = spriteX * CARD_WIDTH;

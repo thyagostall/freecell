@@ -151,8 +151,6 @@ function Game(canvasId) {
 	};
 
 	this.move = function(destination, qty) {
-		qty = Math.min(qty, _countFreeCells() + 1);
-
 		var len = this.origin.cards.length;
 		var cards = this.origin.cards.splice(len - qty);
 		destination.cards = destination.cards.concat(cards);
@@ -169,7 +167,7 @@ function Game(canvasId) {
 		if (this.origin) {
 			var destination = component;
 			if (destination) {
-				var acceptableStreak = destination.howManyAcceptables(this.origin);
+				var acceptableStreak = destination.howManyAcceptables(this.origin, _countFreeCells() + 1);
 				if (acceptableStreak > 0) {
 					this.move(destination, acceptableStreak);
 				} else if (destination !== this.origin) {
@@ -200,3 +198,14 @@ function Game(canvasId) {
 
 var game = new Game('#cardgame');
 game.init(); 
+
+
+function testing() {
+	var a = generate_game(1);
+	var b = deal_ms_fc_board(1);
+	console.log(a);
+	console.log(b);
+	console.log(a == b);
+}
+
+testing();
