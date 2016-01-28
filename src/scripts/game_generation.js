@@ -8,7 +8,7 @@ function range(start, end) {
 	return result;	
 }
 
-function generate_game(seed) {
+function createGame(seed) {
 	var num_cols = 8;
 
 	var getNextValue = function() {

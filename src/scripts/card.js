@@ -5,11 +5,11 @@ function Card(assets, context, code) {
 		this.rank = code.charAt(0);
 		this.suit = code.charAt(1);
 	} else {
-		this.rank = code / 4;
+		this.rank = Math.floor(code / 4);
 		this.suit = code % 4;
 
-		this.rank = CARD_VALUES.charAt(this.rank);
-		this.suit = CARD_VALUES.charAt(this.suit);
+		this.rank = CARD_VALUES[this.rank];
+		this.suit = CARD_SUITS[this.suit];
 	}
 
 	this.image = assets.images['cards'];

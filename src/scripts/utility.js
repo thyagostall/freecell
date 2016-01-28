@@ -20,19 +20,25 @@ function getColor(suit) {
 }
 
 function isNextSameSuit(current, candidate) {
-	if (current.number === 'K') {
+	console.log(current);
+	console.log(candidate);
+	if (current === undefined) {
+		return (candidate.rank === 'A');
+	}
+
+	if (current.rank === 'K') {
 		return false;
 	}
 
-	var nextNumber = CARD_VALUES.indexOf(current.number);
-	nextNumber++;
-	nextNumber = CARD_VALUES[nextNumber];
+	var nextRank = CARD_VALUES.indexOf(current.rank);
+	nextRank++;
+	nextRank = CARD_VALUES[nextRank];
 
-	return nextNumber === candidate.number && current.suit === candidate.suit;
+	return nextRank === candidate.rank && current.suit === candidate.suit;
 }
 
 function isPreviousInvertedSuit(current, candidate) {
-	if (current.number === 'A') {
+	if (current.rank === 'A') {
 		return false;
 	}
 

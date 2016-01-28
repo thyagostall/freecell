@@ -13,12 +13,19 @@ HomeCell.prototype.constructor = HomeCell;
 
 
 HomeCell.prototype.howManyAcceptables = function(origin) {
-	if (origin.cards.length == 0) {
+	if (origin.cards.length === 0) {
 		return 0;
 	}
 	
-	var card = origin.cards[0]
-	if (card.number === 'A' || isNextSameSuit(card)) {
+	var currentOrigin = origin.cards.length - 1;
+	var candidate = origin.cards[currentOrigin];
+	var current = undefined;
+	if (this.cards.length > 0) {
+		var length = this.cards.length;
+		current = this.cards[length - 1];
+	}
+
+	if (candidate.rank === 'A' || isNextSameSuit(current, candidate)) {
 		return 1;
 	} else {
 		return 0;

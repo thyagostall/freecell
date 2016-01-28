@@ -50,7 +50,7 @@ function Game(canvasId) {
 	};
 
 	this.init = function() {
-		var i;
+		var i, j;
 
 		_canvas = $(canvasId)[0];
  		_canvas.width = CANVAS_WIDTH;
@@ -94,14 +94,22 @@ function Game(canvasId) {
 				_componentDict.push(_stacks[i]);
 			}
 
-			for (i = 0; i < 8; i++) {
-				_stacks[i].cards.push(new Card(assets, _context, 'KC'));
+			var generatedGame = createGame(1)
+			for (i = 0; i < generatedGame.length; i++) {
+				for (j = 0; j < generatedGame[i].length; j++) {
+					var tempCard = new Card(assets, _context, generatedGame[i][j]);
+					_stacks[i].cards.push(tempCard);
+				}
 			}
-			_stacks[0].cards.push(new Card(assets, _context, 'QD'));
-			_stacks[0].cards.push(new Card(assets, _context, 'JC'));
-			_stacks[0].cards.push(new Card(assets, _context, 'TD'));
 
-			_freeCells[0].cards.push(new Card(assets, _context, 'AD'));
+			// for (i = 0; i < 8; i++) {
+			// 	_stacks[i].cards.push(new Card(assets, _context, 'KC'));
+			// }
+			// _stacks[0].cards.push(new Card(assets, _context, 'QD'));
+			// _stacks[0].cards.push(new Card(assets, _context, 'JC'));
+			// _stacks[0].cards.push(new Card(assets, _context, 'TD'));
+
+			// _freeCells[0].cards.push(new Card(assets, _context, 'AD'));
 			_this.draw();
 
 			_canvas.onmousemove = function(e) {
