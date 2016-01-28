@@ -20,8 +20,6 @@ function getColor(suit) {
 }
 
 function isNextSameSuit(current, candidate) {
-	console.log(current);
-	console.log(candidate);
 	if (current === undefined) {
 		return (candidate.rank === 'A');
 	}
