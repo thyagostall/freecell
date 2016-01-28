@@ -38,11 +38,11 @@ function isPreviousInvertedSuit(current, candidate) {
 		return false;
 	}
 
-	var previousNumber = CARD_VALUES.indexOf(current.number);
-	previousNumber--;
-	previousNumber = CARD_VALUES[previousNumber];
+	var previousRank = CARD_VALUES.indexOf(current.rank);
+	previousRank--;
+	previousRank = CARD_VALUES[previousRank];
 
-	var result = previousNumber === candidate.number;
+	var result = previousRank === candidate.rank;
 	result &= getColor(current.suit) !== getColor(candidate.suit);
 	return result;
 }
