@@ -33,17 +33,16 @@ function generate_game(seed) {
 	var deck = range(0, 51);
 
 	shuffle(deck);
-
 	deck = deck.reverse();
 
 	for (var i = 0; i < 52; i++) {
 		columns[i % num_cols].push(deck[i]);
 	}
 
-	for (var i = 0; i < 52; i++) {
-		// stacks[i % num_cols].cards.push(deck[i]);
-	}	
+	return columns;
+}
 
+function render_like_oracle(columns) {
 	var render_card = function (card) {
 		var suit = (card % 4);
 		var rank = Math.floor(card / 4);
@@ -57,5 +56,3 @@ function generate_game(seed) {
 
 	return columns.map(render_column).join('');
 }
-
-deal_ms_fc_board(2);

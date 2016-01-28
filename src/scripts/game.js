@@ -197,15 +197,4 @@ function Game(canvasId) {
 }
 
 var game = new Game('#cardgame');
-game.init(); 
-
-
-function testing() {
-	var a = generate_game(1);
-	var b = deal_ms_fc_board(1);
-	console.log(a);
-	console.log(b);
-	console.log(a == b);
-}
-
-testing();
+game.init();
