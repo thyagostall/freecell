@@ -40,6 +40,10 @@ function generate_game(seed) {
 		columns[i % num_cols].push(deck[i]);
 	}
 
+	for (var i = 0; i < 52; i++) {
+		// stacks[i % num_cols].cards.push(deck[i]);
+	}	
+
 	var render_card = function (card) {
 		var suit = (card % 4);
 		var rank = Math.floor(card / 4);
@@ -47,7 +51,7 @@ function generate_game(seed) {
 		return 'A23456789TJQK'.charAt(rank) + 'CDHS'.charAt(suit);
 	};
 
-	var render_column = function(col) {
+	var render_column = function(col, index) {
 		return ': ' + col.map(render_card).join(' ') + '\n';
 	};
 
