@@ -172,8 +172,10 @@ function Game(canvasId) {
 				this.origin = null;
 			}
 		} else {
-			this.origin = component;
-			this.origin.select();
+			if (!(component instanceof HomeCell)) {
+				this.origin = component;
+				this.origin.select();
+			}
 		}
 	};
 
