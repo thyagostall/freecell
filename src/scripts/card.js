@@ -74,3 +74,7 @@ Card.prototype.draw = function(x, y) {
 		this.context.drawImage(this.image, spriteX, spriteY, CARD_WIDTH, CARD_HEIGHT, x, y, CARD_WIDTH - 1, CARD_HEIGHT - 1);
 	}
 };
+
+Card.prototype.getCode = function() {
+	return CARD_VALUES.indexOf(this.rank) * 4 + CARD_SUITS.indexOf(this.suit);
+}

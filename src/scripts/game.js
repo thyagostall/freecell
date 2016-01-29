@@ -102,14 +102,6 @@ function Game(canvasId) {
 				}
 			}
 
-			// for (i = 0; i < 8; i++) {
-			// 	_stacks[i].cards.push(new Card(assets, _context, 'KC'));
-			// }
-			// _stacks[0].cards.push(new Card(assets, _context, 'QD'));
-			// _stacks[0].cards.push(new Card(assets, _context, 'JC'));
-			// _stacks[0].cards.push(new Card(assets, _context, 'TD'));
-
-			// _freeCells[0].cards.push(new Card(assets, _context, 'AD'));
 			_this.draw();
 
 			_canvas.onmousemove = function(e) {
@@ -131,14 +123,9 @@ function Game(canvasId) {
 
 				_this.makeMove(x, y);
 				_this.draw();
-			};
 
-			_canvas.ondblclick = function(e) {
-				// var x = e.offsetX;
-				// var y = e.offsetY;
-
-				// _this.moveToFreeCell(x, y);
-				// _this.draw();
+				var state = getGameState(_componentDict);
+				setGameState(_componentDict, state);
 			};
 		});
 	};
