@@ -49,9 +49,72 @@ function Game(canvasId) {
 		}
 	};
 
-	this.init = function() {
+	this._gameLoaded = function() {
 		var i, j;
 
+		_king = new KingIcon(_this.assets, _context, 292, 20);
+		_king.updateRight();
+
+		_freeCells[0] = new FreeCell(_context, 1, 1);
+		_freeCells[1] = new FreeCell(_context, 72, 1);
+		_freeCells[2] = new FreeCell(_context, 143, 1);
+		_freeCells[3] = new FreeCell(_context, 214, 1);
+
+		_homeCells[0] = new HomeCell(_context, 339, 1);
+		_homeCells[1] = new HomeCell(_context, 410, 1);
+		_homeCells[2] = new HomeCell(_context, 481, 1);
+		_homeCells[3] = new HomeCell(_context, 552, 1);
+
+		_stacks[0] = new Stack(_context, 8, 112);
+		_stacks[1] = new Stack(_context, 84, 112);
+		_stacks[2] = new Stack(_context, 160, 112);
+		_stacks[3] = new Stack(_context, 236, 112);
+		_stacks[4] = new Stack(_context, 312, 112);
+		_stacks[5] = new Stack(_context, 388, 112);
+		_stacks[6] = new Stack(_context, 464, 112);
+		_stacks[7] = new Stack(_context, 540, 112);
+
+		for (i = 0; i < _freeCells.length; i++) {
+			_componentDict.push(_freeCells[i]);
+		}
+		for (i = 0; i < _homeCells.length; i++) {
+			_componentDict.push(_homeCells[i]);
+		}
+		for (i = 0; i < _stacks.length; i++) {
+			_componentDict.push(_stacks[i]);
+		}
+
+		_this.setGameState(createGame(1));
+		_this.setGameState(stateToGame('eyJoIjpbWzAsNF0sWzNdLFtdLFtdXSwiZiI6W1tdLFtdLFsyMF0sWzldXSwicyI6W1s0MSw0OSw3LDEyLDExLDIxLDIzXSxbNSw0OCw1MSwxNiwzNywzMSwzMl0sWzM0LDM1LDMzLDM5LDE1LDI5LDZdLFs0MCwxOSw0NSw0NiwzOCw0NywyMl0sWzE3LDEsNDMsMTQsMzBdLFsyNiw0NF0sWzI0LDUwLDIsMTMsNDIsMjhdLFsxOCwxMCw4LDI3LDI1LDM2XV19'));
+		_this.draw();
+
+		_canvas.onmousemove = function(e) {
+			var x = e.offsetX;
+			var y = e.offsetY;
+
+			if (y <= 95) {
+				if (x < 285) {
+					_king.updateLeft();
+				} else if (x > 339) {
+					_king.updateRight();
+				}
+			}
+		};
+
+		_canvas.onclick = function(e) {
+			var x = e.offsetX;
+			var y = e.offsetY;
+
+			_this.makeMove(x, y);
+			_this.draw();
+
+			var state = gameToState(_componentDict);
+			console.log(state);
+			stateToGame(state);
+		};
+	}
+
+	this.init = function() {
 		_canvas = $(canvasId)[0];
  		_canvas.width = CANVAS_WIDTH;
 		_canvas.height = CANVAS_HEIGHT;
@@ -60,74 +123,8 @@ function Game(canvasId) {
 		_context.fillStyle = BACKGROUND_COLOR;
 		_context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-		var assets = new AssetLoader();
-		assets.loadAll(function() {
-			_king = new KingIcon(assets, _context, 292, 20);
-			_king.updateRight();
-
-			_freeCells[0] = new FreeCell(_context, 1, 1);
-			_freeCells[1] = new FreeCell(_context, 72, 1);
-			_freeCells[2] = new FreeCell(_context, 143, 1);
-			_freeCells[3] = new FreeCell(_context, 214, 1);
-
-			_homeCells[0] = new HomeCell(_context, 339, 1);
-			_homeCells[1] = new HomeCell(_context, 410, 1);
-			_homeCells[2] = new HomeCell(_context, 481, 1);
-			_homeCells[3] = new HomeCell(_context, 552, 1);
-
-			_stacks[0] = new Stack(_context, 8, 112);
-			_stacks[1] = new Stack(_context, 84, 112);
-			_stacks[2] = new Stack(_context, 160, 112);
-			_stacks[3] = new Stack(_context, 236, 112);
-			_stacks[4] = new Stack(_context, 312, 112);
-			_stacks[5] = new Stack(_context, 388, 112);
-			_stacks[6] = new Stack(_context, 464, 112);
-			_stacks[7] = new Stack(_context, 540, 112);
-
-			for (i = 0; i < _freeCells.length; i++) {
-				_componentDict.push(_freeCells[i]);
-			}
-			for (i = 0; i < _homeCells.length; i++) {
-				_componentDict.push(_homeCells[i]);
-			}
-			for (i = 0; i < _stacks.length; i++) {
-				_componentDict.push(_stacks[i]);
-			}
-
-			var generatedGame = createGame(1)
-			for (i = 0; i < generatedGame.length; i++) {
-				for (j = 0; j < generatedGame[i].length; j++) {
-					var tempCard = new Card(assets, _context, generatedGame[i][j]);
-					_stacks[i].cards.push(tempCard);
-				}
-			}
-
-			_this.draw();
-
-			_canvas.onmousemove = function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
-
-				if (y <= 95) {
-					if (x < 285) {
-						_king.updateLeft();
-					} else if (x > 339) {
-						_king.updateRight();
-					}
-				}
-			};
-
-			_canvas.onclick = function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
-
-				_this.makeMove(x, y);
-				_this.draw();
-
-				var state = getGameState(_componentDict);
-				setGameState(_componentDict, state);
-			};
-		});
+		_this.assets = new AssetLoader();
+		_this.assets.loadAll(_this._gameLoaded);
 	};
 
 	this.moveToFreeCell = function(x, y) {
@@ -191,6 +188,41 @@ function Game(canvasId) {
 			_stacks[i].draw();
 		}
 	};
+
+	this.setGameState = function(game) {
+		var i, j;
+
+		console.log(game);
+		
+		for (i = 0; i < game.h.length; i++) {
+			_homeCells[i].cards = [];
+			
+			for (j = 0; j < game.h[i].length; j++) {
+				var card = new Card(this.assets, _context, game.h[i][j]);
+				_homeCells[i].cards.push(card);
+			}
+		}	
+
+		for (i = 0; i < game.f.length; i++) {
+			_freeCells[i].cards = [];
+
+			if (!game.f[i].length) {
+				continue;
+			}
+
+			var card = new Card(this.assets, _context, game.f[i]);
+			_freeCells[i].cards.push(card);
+		}
+
+		for (i = 0; i < game.s.length; i++) {
+			_stacks[i].cards = [];			
+			
+			for (j = 0; j < game.s[i].length; j++) {
+				var card = new Card(this.assets, _context, game.s[i][j]);
+				_stacks[i].cards.push(card);
+			}
+		}
+	}
 }
 
 var game = new Game('#cardgame');

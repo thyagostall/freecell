@@ -35,11 +35,17 @@ function createGame(seed) {
 	shuffle(deck);
 	deck = deck.reverse();
 
+	var gameState = {
+		'h': [[], [], [], []],
+		'f': [[], [], [], []],
+		's': [[], [], [], [], [], [], [], []]
+	};	
+
 	for (var i = 0; i < 52; i++) {
-		columns[i % num_cols].push(deck[i]);
+		gameState.s[i % num_cols].push(deck[i]);
 	}
 
-	return columns;
+	return gameState;
 }
 
 function render_like_oracle(columns) {

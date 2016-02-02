@@ -8,11 +8,7 @@ function cardsToNumbers(cards) {
 	return result;
 }
 
-function numbersToCards(assets, context, numbers) {
-
-}
-
-function getGameState(components) {
+function gameToState(components) {
 	var gameState = {
 		'h': [],
 		'f': [],
@@ -30,10 +26,9 @@ function getGameState(components) {
 
 		gameState[key].push(cardsToNumbers(components[i].cards));
 	}
-	console.log(JSON.stringify(gameState));
-	return JSON.stringify(gameState);
+	return btoa(JSON.stringify(gameState));
 }
 
-function setGameState(components, game) {
-	console.log(JSON.parse(game));
+function stateToGame(game) {
+	return JSON.parse(atob(game));
 }
