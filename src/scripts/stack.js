@@ -49,14 +49,34 @@ Stack.prototype.isSelected = function() {
 	return this._selected;
 };
 
+Stack.prototype.getStreakSize = function() {
+	var last = this.cards.length - 1;
+	var result = 0;
+
+	for (var i = last; i > 0; i--) {
+		if (isPreviousInvertedSuit(this.cards[i - 1], this.cards[i])) {
+			result++;
+		} else {
+			break;
+		}
+	}
+	return result + 1;
+}
+
 Stack.prototype.howManyAcceptables = function(origin, max) {
 	var cards = origin.cards;
+	var streakSize = 1;
+	
+	if (origin instanceof Stack) {
+		streakSize = origin.getStreakSize();
+	}
+	
 	if (this.cards.length === 0) {
-		return Math.min(cards.length, max);
+		return Math.min(streakSize, max);
 	}
 	
 	var last = this.cards.length - 1;	
-	for (var i = cards.length - 1; i >= cards.length - max; i--) {
+	for (var i = cards.length - 1; i >= cards.length - streakSize; i--) {
 		if (isPreviousInvertedSuit(this.cards[last], cards[i])) {
 			return cards.length - i;
 		}

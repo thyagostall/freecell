@@ -11,6 +11,8 @@ function Game(canvasId) {
 	var _homeCells = [];
 	var _stacks = [];
 
+	var _previousGameState = '';
+
 	var _countFreeCells = function() {
 		var result = 0;
 		for (var i = 0; i < _freeCells.length; i++) {
@@ -109,8 +111,10 @@ function Game(canvasId) {
 			_this.draw();
 
 			var state = gameToState(_componentDict);
-			console.log(state);
-			stateToGame(state);
+			if (state !== _previousGameState) {
+				console.log(state);
+				_previousGameState = state;
+			}
 		};
 	}
 
@@ -156,6 +160,12 @@ function Game(canvasId) {
 			return;
 		}
 
+		if (component === this.origin) {
+			this.origin = null;			
+			this._selected = null;
+			return;
+		}
+
 		if (this.origin) {
 			var destination = component;
 			if (destination) {
@@ -191,8 +201,6 @@ function Game(canvasId) {
 
 	this.setGameState = function(game) {
 		var i, j;
-
-		console.log(game);
 		
 		for (i = 0; i < game.h.length; i++) {
 			_homeCells[i].cards = [];
