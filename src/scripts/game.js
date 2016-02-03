@@ -89,7 +89,8 @@ function Game(canvasId) {
 			_componentDict.push(_stacks[i]);
 		}
 
-		_this.setGameState(stateToGame('eyJoIjpbWzAsNF0sWzNdLFtdLFtdXSwiZiI6W1tdLFtdLFsyMF0sWzldXSwicyI6W1s0MSw0OSw3LDEyLDExLDIxLDIzXSxbNSw0OCw1MSwxNiwzNywzMSwzMl0sWzM0LDM1LDMzLDM5LDE1LDI5LDZdLFs0MCwxOSw0NSw0NiwzOCw0NywyMl0sWzE3LDEsNDMsMTQsMzBdLFsyNiw0NF0sWzI0LDUwLDIsMTMsNDIsMjhdLFsxOCwxMCw4LDI3LDI1LDM2XV19'));
+		// _this.setGameState(stateToGame('eyJoIjpbWzAsNF0sWzNdLFtdLFtdXSwiZiI6W1tdLFtdLFsyMF0sWzldXSwicyI6W1s0MSw0OSw3LDEyLDExLDIxLDIzXSxbNSw0OCw1MSwxNiwzNywzMSwzMl0sWzM0LDM1LDMzLDM5LDE1LDI5LDZdLFs0MCwxOSw0NSw0NiwzOCw0NywyMl0sWzE3LDEsNDMsMTQsMzBdLFsyNiw0NF0sWzI0LDUwLDIsMTMsNDIsMjhdLFsxOCwxMCw4LDI3LDI1LDM2XV19'));
+		_this.setGameState(createGame(1));
 		_this.draw();
 
 		_canvas.onmousemove = function(e) {

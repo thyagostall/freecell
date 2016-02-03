@@ -42,9 +42,9 @@ Card.prototype._getVerticalPositionGrid = function(suit) {
 		return 0;
 	case 'H':
 		return 1;
-	case 'S':
-		return 2;
 	case 'C':
+		return 2;
+	case 'S':
 		return 3;
 	}
 };
