@@ -12,6 +12,7 @@ function Game(canvasId) {
 	var _stacks = [];
 
 	var _previousGameState = '';
+	var _cardsInGame = 0;
 
 	var _countFreeCells = function() {
 		var result = 0;
@@ -115,6 +116,8 @@ function Game(canvasId) {
 				console.log(state);
 				_previousGameState = state;
 			}
+
+			console.log(_cardsInGame);
 		};
 	}
 
@@ -172,6 +175,9 @@ function Game(canvasId) {
 				var acceptableStreak = destination.howManyAcceptables(this.origin, _countFreeCells() + 1);
 				if (acceptableStreak > 0) {
 					this.move(destination, acceptableStreak);
+					if (destination instanceof HomeCell) {
+						_cardsInGame -= acceptableStreak;
+					}
 				} else if (destination !== this.origin) {
 					console.log('impossible move!!');
 				}
@@ -201,6 +207,7 @@ function Game(canvasId) {
 
 	this.setGameState = function(game) {
 		var i, j;
+		_cardsInGame = 0;
 		
 		for (i = 0; i < game.h.length; i++) {
 			_homeCells[i].cards = [];
@@ -220,6 +227,7 @@ function Game(canvasId) {
 
 			var card = new Card(this.assets, _context, game.f[i]);
 			_freeCells[i].cards.push(card);
+			_cardsInGame++;
 		}
 
 		for (i = 0; i < game.s.length; i++) {
@@ -228,6 +236,7 @@ function Game(canvasId) {
 			for (j = 0; j < game.s[i].length; j++) {
 				var card = new Card(this.assets, _context, game.s[i][j]);
 				_stacks[i].cards.push(card);
+				_cardsInGame++;				
 			}
 		}
 	}
