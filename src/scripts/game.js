@@ -12,7 +12,9 @@ function Game(canvasId) {
 	var _stacks = [];
 
 	var _previousGameState = '';
-	var _cardsInGame = 0;
+	var _cardsInGame;
+
+	var _events = new GameEvents(this);
 
 	var _countFreeCells = function() {
 		var result = 0;
@@ -87,7 +89,6 @@ function Game(canvasId) {
 			_componentDict.push(_stacks[i]);
 		}
 
-		_this.setGameState(createGame(1));
 		_this.setGameState(stateToGame('eyJoIjpbWzAsNF0sWzNdLFtdLFtdXSwiZiI6W1tdLFtdLFsyMF0sWzldXSwicyI6W1s0MSw0OSw3LDEyLDExLDIxLDIzXSxbNSw0OCw1MSwxNiwzNywzMSwzMl0sWzM0LDM1LDMzLDM5LDE1LDI5LDZdLFs0MCwxOSw0NSw0NiwzOCw0NywyMl0sWzE3LDEsNDMsMTQsMzBdLFsyNiw0NF0sWzI0LDUwLDIsMTMsNDIsMjhdLFsxOCwxMCw4LDI3LDI1LDM2XV19'));
 		_this.draw();
 
@@ -116,8 +117,6 @@ function Game(canvasId) {
 				console.log(state);
 				_previousGameState = state;
 			}
-
-			console.log(_cardsInGame);
 		};
 	}
 
@@ -176,10 +175,10 @@ function Game(canvasId) {
 				if (acceptableStreak > 0) {
 					this.move(destination, acceptableStreak);
 					if (destination instanceof HomeCell) {
-						_cardsInGame -= acceptableStreak;
+						_setCardsInGame(this.getCardsInGame() - acceptableStreak);
 					}
 				} else if (destination !== this.origin) {
-					console.log('impossible move!!');
+					_events.doMovementNotAllowed();
 				}
 
 				this.origin = null;
@@ -207,7 +206,7 @@ function Game(canvasId) {
 
 	this.setGameState = function(game) {
 		var i, j;
-		_cardsInGame = 0;
+		_setCardsInGame(0);
 		
 		for (i = 0; i < game.h.length; i++) {
 			_homeCells[i].cards = [];
@@ -227,7 +226,7 @@ function Game(canvasId) {
 
 			var card = new Card(this.assets, _context, game.f[i]);
 			_freeCells[i].cards.push(card);
-			_cardsInGame++;
+			_setCardsInGame(this.getCardsInGame() + 1);
 		}
 
 		for (i = 0; i < game.s.length; i++) {
@@ -236,9 +235,18 @@ function Game(canvasId) {
 			for (j = 0; j < game.s[i].length; j++) {
 				var card = new Card(this.assets, _context, game.s[i][j]);
 				_stacks[i].cards.push(card);
-				_cardsInGame++;				
+				_setCardsInGame(this.getCardsInGame() + 1);
 			}
 		}
+	}
+
+	var _setCardsInGame = function(cardsInGame) {
+		_cardsInGame = cardsInGame;
+		_events.doCardQuantityChange();
+	}
+
+	this.getCardsInGame = function() {
+		return _cardsInGame;
 	}
 }
 
