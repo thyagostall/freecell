@@ -89,7 +89,6 @@ function Game(canvasId, gameEvents) {
 			_componentDict.push(_stacks[i]);
 		}
 
-		_this.setGameState(createGame(1));
 		_this.draw();
 
 		_canvas.onmousemove = function(e) {
@@ -118,6 +117,11 @@ function Game(canvasId, gameEvents) {
 				_previousGameState = state;
 			}
 		};
+	}
+
+	this.newGame = function(gameNumber) {
+		_this.setGameState(createGame(gameNumber));
+		_this.draw();
 	}
 
 	this.init = function() {
