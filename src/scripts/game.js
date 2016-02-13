@@ -120,8 +120,18 @@ function Game(canvasId, gameEvents) {
 	}
 
 	this.newGame = function(gameNumber) {
-		_this.setGameState(createGame(gameNumber));
-		_this.draw();
+		this.gameNumber = gameNumber;
+		this.setGameState(createGame(gameNumber));
+		this.draw();
+	}
+
+	this.newRandomGame = function() {
+		var gameNumber = Math.floor(Math.random() * 1000000 + 1);
+		this.newGame(gameNumber);
+	}
+
+	this.restartGame = function() {
+		this.newGame(this.gameNumber);
 	}
 
 	this.init = function() {
@@ -210,7 +220,7 @@ function Game(canvasId, gameEvents) {
 
 	this.setGameState = function(game) {
 		var i, j;
-		_setCardsInGame(0);
+		var cardsInserted = 0;
 		
 		for (i = 0; i < game.h.length; i++) {
 			_homeCells[i].cards = [];
@@ -230,7 +240,7 @@ function Game(canvasId, gameEvents) {
 
 			var card = new Card(this.assets, _context, game.f[i]);
 			_freeCells[i].cards.push(card);
-			_setCardsInGame(this.getCardsInGame() + 1);
+			cardsInserted++;
 		}
 
 		for (i = 0; i < game.s.length; i++) {
@@ -239,8 +249,15 @@ function Game(canvasId, gameEvents) {
 			for (j = 0; j < game.s[i].length; j++) {
 				var card = new Card(this.assets, _context, game.s[i][j]);
 				_stacks[i].cards.push(card);
-				_setCardsInGame(this.getCardsInGame() + 1);
+				cardsInserted++;
 			}
+		}
+
+		_setCardsInGame(cardsInserted);
+		var state = gameToState(_componentDict);
+		if (state !== _previousGameState) {
+			_events.doStateChange(state);
+			_previousGameState = state;
 		}
 	}
 
