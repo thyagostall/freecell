@@ -2,6 +2,7 @@ function GameEvents() {
 
 }
 
+// OK
 GameEvents.prototype.setGame = function(game) {
 	this.game = game;
 };
@@ -20,12 +21,6 @@ GameEvents.prototype.doMovementNotAllowed = function() {
 	}
 };
 
-GameEvents.prototype.doGameOver = function() {
-	if (this.onGameOver !== undefined) {
-		this.onGameOver();
-	}
-};
-
 // OK
 GameEvents.prototype.doStateChange = function(hash) {
 	if (this.onStateChange !== undefined) {
@@ -33,57 +28,48 @@ GameEvents.prototype.doStateChange = function(hash) {
 	}
 };
 
-GameEvents.prototype.doAskResign = function() {
-	if (this.onAskResign !== undefined) {
-		this.onAskResign();
+// OK
+GameEvents.prototype.doNumberChange = function(number) {
+	if (this.onNumberChange !== undefined) {
+		this.onNumberChange(number);
 	}
 };
 
-GameEvents.prototype.doResign = function(result) {
-	//Resign the game
-};
-
-GameEvents.prototype.doAskSelectGame = function() {
-	if (this.onAskSelectGame !== undefined) {
-		this.onAskSelectGame();
+// OK
+GameEvents.prototype.doBeforeSelectGame = function() {
+	if (this.onBeforeSelectGame !== undefined) {
+		this.onBeforeSelectGame();
 	}
 };
 
-GameEvents.prototype.doSelectGame = function(gameNumber) {
-	game.newGame(gameNumber);
-};
-
-GameEvents.prototype.doAskHowManyCardsMove = function() {
-
-};
-
-GameEvents.prototype.doCardsMove = function(type) {
-
+// OK
+GameEvents.prototype.doSelectGame = function(number) {
+	game.newGame(number);
 };
 
 
-
-
+// OK
 GameEvents.prototype.onCardQuantityChange = function(quantity) {
 	$('#card-quantity').text(quantity);
 };
 
+// OK
 GameEvents.prototype.onMovementNotAllowed = function() {
-	console.log('Movement not allowed!');
+	window.alert('Movement not allowed!');
 };
 
-GameEvents.prototype.onGameOver = function() {
-	console.log('Game over');
-};
-
+// OK
 GameEvents.prototype.onStateChange = function(hash) {
 	$('#game-state').text(hash);
 };
 
-GameEvents.prototype.onAskResign = function() {
-	this.doResign(true);
+// OK
+GameEvents.prototype.onNumberChange = function(number) {
+	$('#game-number').text('#' + number);
 };
 
-GameEvents.prototype.onAskHowManyCardsMove = function() {
-	this.doCardsMove(1);
-};
+// OK
+GameEvents.prototype.onBeforeSelectGame = function() {
+	var gameNumber = window.prompt("Type the game number:");
+	this.doSelectGame(new Number(gameNumber));
+}

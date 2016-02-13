@@ -10,6 +10,7 @@ function range(start, end) {
 
 function createGame(seed) {
 	var num_cols = 8;
+	var number = seed;
 
 	var getNextValue = function() {
 		seed = ((seed * 214013 + 2531011) & 0x7fffffff);
@@ -36,6 +37,7 @@ function createGame(seed) {
 	deck = deck.reverse();
 
 	var gameState = {
+		'n': number,
 		'h': [[], [], [], []],
 		'f': [[], [], [], []],
 		's': [[], [], [], [], [], [], [], []]

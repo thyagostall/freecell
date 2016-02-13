@@ -111,7 +111,7 @@ function Game(canvasId, gameEvents) {
 			_this.makeMove(x, y);
 			_this.draw();
 
-			var state = gameToState(_componentDict);
+			var state = gameToState(_componentDict, this.gameNumber);
 			if (state !== _previousGameState) {
 				_events.doStateChange(state);
 				_previousGameState = state;
@@ -132,6 +132,10 @@ function Game(canvasId, gameEvents) {
 
 	this.restartGame = function() {
 		this.newGame(this.gameNumber);
+	}
+
+	this.selectGame = function() {
+		_events.doBeforeSelectGame();
 	}
 
 	this.init = function() {
@@ -223,6 +227,9 @@ function Game(canvasId, gameEvents) {
 	this.setGameState = function(game) {
 		var i, j;
 		var cardsInserted = 0;
+
+		this.gameNumber = game.n;
+		_events.doNumberChange(this.gameNumber);		
 		
 		for (i = 0; i < game.h.length; i++) {
 			_homeCells[i].cards = [];
@@ -256,7 +263,7 @@ function Game(canvasId, gameEvents) {
 		}
 
 		_setCardsInGame(cardsInserted);
-		var state = gameToState(_componentDict);
+		var state = gameToState(_componentDict, this.gameNumber);
 		if (state !== _previousGameState) {
 			_events.doStateChange(state);
 			_previousGameState = state;

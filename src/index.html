@@ -19,11 +19,12 @@
     <div class="container no-selection">
       <div>
         <button type="button" onclick="game.newRandomGame();">New Game</button>
-        <button type="button" onclick="game.newGame(1);">Select Game</button>
+        <button type="button" onclick="game.selectGame();">Select Game</button>
         <button type="button" onclick="game.restartGame();">Restart Game</button>
         <button type="button" onclick="console.log('working');">Statistics</button>
         <button type="button" onclick="console.log('working');">Options</button>
-        Cards Left: <a id="card-quantity">52</a>
+        Cards Left: <span id="card-quantity">52</span>
+        Game: <span id="game-number"></span>
       </div>      
 
       <canvas id="cardgame">

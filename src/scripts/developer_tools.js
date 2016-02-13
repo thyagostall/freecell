@@ -8,8 +8,9 @@ function cardsToNumbers(cards) {
 	return result;
 }
 
-function gameToState(components) {
+function gameToState(components, gameNumber) {
 	var gameState = {
+		'n': gameNumber,
 		'h': [],
 		'f': [],
 		's': []
