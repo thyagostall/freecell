@@ -135,6 +135,8 @@ function Game(canvasId, gameEvents) {
 	}
 
 	this.init = function() {
+		_events.setGame(_this);
+
 		_canvas = $(canvasId)[0];
  		_canvas.width = CANVAS_WIDTH;
 		_canvas.height = CANVAS_HEIGHT;

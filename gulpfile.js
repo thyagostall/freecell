@@ -27,7 +27,7 @@ gulp.task('styles', function() {
 });
 
 gulp.task('build', function() {
-	gulp.src([sourceDir + '**/utility.js', sourceDir + '**/*.js'])
+	gulp.src([sourceDir + '**/utility.js', sourceDir + '**/game_events.js', sourceDir + '**/*.js'])
 		.pipe(concat('main.js'))
 		.pipe(gulp.dest(distDir))
 		.pipe(connect.reload());

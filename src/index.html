@@ -28,6 +28,10 @@
 
       <canvas id="cardgame">
       </canvas>
+
+      <div>
+        <textarea rows="4" cols="100" id="game-state"></textarea>
+      </div>
     </div>
 
     <!-- build:vendor -->
@@ -35,12 +39,12 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
     <!-- build:js -->
+    <script src="scripts/game_events.js"></script>    
     <script src="scripts/utility.js"></script>    
     <script src="scripts/card.js"></script>
     <script src="scripts/stack.js"></script>
     <script src="scripts/game.js"></script>
     <script src="scripts/game_generation.js"></script>
-    <script src="scripts/game_generation_oracle.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
