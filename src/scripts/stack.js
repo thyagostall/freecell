@@ -78,7 +78,7 @@ Stack.prototype.howManyAcceptables = function(origin, max) {
 	var last = this.cards.length - 1;	
 	for (var i = cards.length - 1; i >= cards.length - streakSize; i--) {
 		if (isPreviousInvertedSuit(this.cards[last], cards[i])) {
-			return cards.length - i;
+			return Math.min(cards.length - i, max);
 		}
 	}
 	return 0;

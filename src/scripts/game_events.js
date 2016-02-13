@@ -47,6 +47,13 @@ GameEvents.prototype.doSelectGame = function(number) {
 	game.newGame(number);
 };
 
+// OK
+GameEvents.prototype.doGameOver = function() {
+	if (this.onGameOver !== undefined) {
+		this.onGameOver();
+	}	
+}
+
 
 // OK
 GameEvents.prototype.onCardQuantityChange = function(quantity) {
@@ -72,4 +79,9 @@ GameEvents.prototype.onNumberChange = function(number) {
 GameEvents.prototype.onBeforeSelectGame = function() {
 	var gameNumber = window.prompt("Type the game number:");
 	this.doSelectGame(new Number(gameNumber));
-}
+};
+
+// OK
+GameEvents.prototype.onGameOver = function() {
+	console.log('Game fuckin\' over');
+};

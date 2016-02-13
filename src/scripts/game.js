@@ -105,6 +105,11 @@ function Game(canvasId, gameEvents) {
 		};
 
 		_canvas.onclick = function(e) {
+			if (!_areThereAvailableMoves()) {
+				_events.doGameOver();
+				return;
+			}
+
 			var x = e.offsetX;
 			var y = e.offsetY;
 
@@ -268,6 +273,22 @@ function Game(canvasId, gameEvents) {
 			_events.doStateChange(state);
 			_previousGameState = state;
 		}
+	}
+
+	var _areThereAvailableMoves = function() {
+		for (var i = 0; i < _componentDict.length; i++) {
+			for (var j = 0; j < _componentDict.length; j++) {
+				if (_componentDict[j] instanceof HomeCell || _componentDict[i] instanceof HomeCell || _componentDict[i] === _componentDict[j]) {
+					continue;
+				}
+
+				if (_componentDict[i].howManyAcceptables(_componentDict[j], 1) > 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	var _setCardsInGame = function(cardsInGame) {
