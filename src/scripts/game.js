@@ -1,6 +1,6 @@
 'use strict';
 
-function Game(canvasId) {
+function Game(canvasId, gameEvents) {
 	var _this = this;
 	var _canvas;
 	var _context;
@@ -14,7 +14,7 @@ function Game(canvasId) {
 	var _previousGameState = '';
 	var _cardsInGame;
 
-	var _events = new GameEvents(this);
+	var _events = gameEvents;
 
 	var _countFreeCells = function() {
 		var result = 0;
@@ -89,7 +89,6 @@ function Game(canvasId) {
 			_componentDict.push(_stacks[i]);
 		}
 
-		// _this.setGameState(stateToGame('eyJoIjpbWzAsNF0sWzNdLFtdLFtdXSwiZiI6W1tdLFtdLFsyMF0sWzldXSwicyI6W1s0MSw0OSw3LDEyLDExLDIxLDIzXSxbNSw0OCw1MSwxNiwzNywzMSwzMl0sWzM0LDM1LDMzLDM5LDE1LDI5LDZdLFs0MCwxOSw0NSw0NiwzOCw0NywyMl0sWzE3LDEsNDMsMTQsMzBdLFsyNiw0NF0sWzI0LDUwLDIsMTMsNDIsMjhdLFsxOCwxMCw4LDI3LDI1LDM2XV19'));
 		_this.setGameState(createGame(1));
 		_this.draw();
 
@@ -115,7 +114,7 @@ function Game(canvasId) {
 
 			var state = gameToState(_componentDict);
 			if (state !== _previousGameState) {
-				console.log(state);
+				_events.doStateChange(state);
 				_previousGameState = state;
 			}
 		};
@@ -243,7 +242,7 @@ function Game(canvasId) {
 
 	var _setCardsInGame = function(cardsInGame) {
 		_cardsInGame = cardsInGame;
-		_events.doCardQuantityChange();
+		_events.doCardQuantityChange(cardsInGame);
 	}
 
 	this.getCardsInGame = function() {
@@ -251,5 +250,6 @@ function Game(canvasId) {
 	}
 }
 
-var game = new Game('#cardgame');
+var gameEvents = new GameEvents();
+var game = new Game('#cardgame', gameEvents);
 game.init();
