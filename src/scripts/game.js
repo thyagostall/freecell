@@ -111,7 +111,7 @@ function Game(canvasId, gameEvents) {
 			_this.makeMove(x, y);
 			_this.draw();
 
-			var state = gameToState(_componentDict, this.gameNumber);
+			var state = gameToState(_componentDict, _this.gameNumber);
 			if (state !== _previousGameState) {
 				_events.doStateChange(state);
 				_previousGameState = state;
