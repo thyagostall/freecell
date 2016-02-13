@@ -47,18 +47,3 @@ function createGame(seed) {
 
 	return gameState;
 }
-
-function render_like_oracle(columns) {
-	var render_card = function (card) {
-		var suit = (card % 4);
-		var rank = Math.floor(card / 4);
-
-		return 'A23456789TJQK'.charAt(rank) + 'CDHS'.charAt(suit);
-	};
-
-	var render_column = function(col, index) {
-		return ': ' + col.map(render_card).join(' ') + '\n';
-	};
-
-	return columns.map(render_column).join('');
-}
