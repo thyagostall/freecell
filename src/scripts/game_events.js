@@ -26,7 +26,6 @@ GameEvents.prototype.doStateChange = function(hash) {
 	if (this.onStateChange !== undefined) {
 		this.onStateChange(hash);
 	}
-	console.log('State Changed');
 };
 
 // OK

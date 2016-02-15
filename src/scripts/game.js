@@ -234,7 +234,6 @@ function Game(canvasId, gameEvents) {
 	};
 
 	this.setGameHash = function(hash) {
-		console.log('bf: ' + hash);
 		this.setGameState(stateToGame(hash));
 		this.draw();
 	}
@@ -283,8 +282,6 @@ function Game(canvasId, gameEvents) {
 			_events.doStateChange(state);
 			_previousGameState = state;
 		}
-
-		console.log('af: ' + state);
 	}
 
 	var _areThereAvailableMoves = function() {
