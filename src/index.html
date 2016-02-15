@@ -31,7 +31,9 @@
       </canvas>
 
       <div>
-        <textarea rows="4" cols="100" id="game-state"></textarea>
+        <p>Current state:</p>
+        <textarea rows="4" cols="103" id="game-state"></textarea>
+        <button type="button" onclick="game.setGameHash($('#game-state').val());">Set State</button>
       </div>
     </div>
 

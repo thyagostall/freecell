@@ -26,6 +26,7 @@ GameEvents.prototype.doStateChange = function(hash) {
 	if (this.onStateChange !== undefined) {
 		this.onStateChange(hash);
 	}
+	console.log('State Changed');
 };
 
 // OK
@@ -54,6 +55,15 @@ GameEvents.prototype.doGameOver = function() {
 	}	
 }
 
+// OK
+GameEvents.prototype.doAskCardQuantityToMove = function(acceptableStreak, destination) {
+	if (this.onAskCardQuantityToMove !== undefined) {
+		this.onAskCardQuantityToMove(acceptableStreak, destination);
+	} else {
+		this.game.finishMovement(acceptableStreak, destination);
+	}
+}
+
 
 // OK
 GameEvents.prototype.onCardQuantityChange = function(quantity) {
@@ -67,7 +77,7 @@ GameEvents.prototype.onMovementNotAllowed = function() {
 
 // OK
 GameEvents.prototype.onStateChange = function(hash) {
-	$('#game-state').text(hash);
+	$('#game-state').val(hash);
 };
 
 // OK
@@ -85,3 +95,16 @@ GameEvents.prototype.onBeforeSelectGame = function() {
 GameEvents.prototype.onGameOver = function() {
 	console.log('Game fuckin\' over');
 };
+
+// OK
+GameEvents.prototype.doAskCardQuantityToMove = function(acceptableStreak, destination) {
+	if (destination instanceof Stack && destination.cards.length === 0) {
+		if (window.confirm('Do you want to move all the cards?')) {
+			game.finishMovement(acceptableStreak, destination);
+		} else {
+			game.finishMovement(-1, destination);
+		}
+	} else {
+		game.finishMovement(acceptableStreak, destination);
+	}
+}

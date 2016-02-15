@@ -179,6 +179,19 @@ function Game(canvasId, gameEvents) {
 		destination.cards = destination.cards.concat(cards);
 	};
 
+	this.finishMovement = function(acceptableStreak, destination) {
+		if (acceptableStreak > 0) {
+			this.move(destination, acceptableStreak);
+			if (destination instanceof HomeCell) {
+				_setCardsInGame(this.getCardsInGame() - acceptableStreak);
+			}
+		} else if (acceptableStreak !== -1 && destination !== this.origin) {
+			_events.doMovementNotAllowed();
+		}
+
+		this.origin = null;
+	};
+
 	this.makeMove = function(x, y) {
 		_delesectAll();
 		var component = _getComponentAt(x, y);
@@ -197,16 +210,7 @@ function Game(canvasId, gameEvents) {
 			var destination = component;
 			if (destination) {
 				var acceptableStreak = destination.howManyAcceptables(this.origin, _countFreeCells() + 1);
-				if (acceptableStreak > 0) {
-					this.move(destination, acceptableStreak);
-					if (destination instanceof HomeCell) {
-						_setCardsInGame(this.getCardsInGame() - acceptableStreak);
-					}
-				} else if (destination !== this.origin) {
-					_events.doMovementNotAllowed();
-				}
-
-				this.origin = null;
+				_events.doAskCardQuantityToMove(acceptableStreak, destination);
 			}
 		} else {
 			if (!(component instanceof HomeCell)) {
@@ -228,6 +232,12 @@ function Game(canvasId, gameEvents) {
 			_stacks[i].draw();
 		}
 	};
+
+	this.setGameHash = function(hash) {
+		console.log('bf: ' + hash);
+		this.setGameState(stateToGame(hash));
+		this.draw();
+	}
 
 	this.setGameState = function(game) {
 		var i, j;
@@ -273,6 +283,8 @@ function Game(canvasId, gameEvents) {
 			_events.doStateChange(state);
 			_previousGameState = state;
 		}
+
+		console.log('af: ' + state);
 	}
 
 	var _areThereAvailableMoves = function() {
