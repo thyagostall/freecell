@@ -13,7 +13,7 @@ gulp.task('webserver', function() {
 		port: 2345,
 		livereload: true
 	});
-	gulp.watch('src/**/*.*', ['build']);
+	gulp.watch('src/**/*.*', ['build', 'images', 'styles', 'vendor']);
 });
 
 gulp.task('images', function() {
@@ -55,4 +55,4 @@ gulp.task('lint', function() {
 // 		.pipe(eslint.failAfterError());
 // });
 
-gulp.task('default', ['webserver', 'build', 'images', 'styles', 'vendor']);
+gulp.task('default', ['build', 'images', 'styles', 'vendor']);
