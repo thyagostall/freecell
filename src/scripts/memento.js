@@ -30,3 +30,12 @@ Memento.prototype.previous = function() {
 	}
 	return this.pointer;
 }
+
+Memento.prototype.undo = function() {
+	if (!this.states.pop()) {
+		return;
+	}
+	
+	this.pointer--;
+	return this.states[this.pointer];
+}

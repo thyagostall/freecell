@@ -15,6 +15,7 @@ function Game(canvasId, gameEvents) {
 	var _cardsInGame;
 
 	var _events = gameEvents;
+	var _running = false;
 
 	var _countFreeCells = function() {
 		var result = 0;
@@ -105,7 +106,13 @@ function Game(canvasId, gameEvents) {
 		};
 
 		_canvas.onclick = function(e) {
+			if (!_running) {
+				console.log('not running');
+				return;
+			}
+
 			if (!_areThereAvailableMoves()) {
+				_running = false;
 				_events.doGameOver();
 				return;
 			}
@@ -128,6 +135,8 @@ function Game(canvasId, gameEvents) {
 		this.gameNumber = gameNumber;
 		this.setGameState(createGame(gameNumber));
 		this.draw();
+
+		_running = true;
 	}
 
 	this.newRandomGame = function() {

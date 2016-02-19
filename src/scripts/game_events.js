@@ -77,6 +77,7 @@ GameEvents.prototype.onMovementNotAllowed = function() {
 // OK
 GameEvents.prototype.onStateChange = function(hash) {
 	memento.addState(hash);
+	$('#game-hash').val(hash);
 };
 
 // OK
@@ -92,7 +93,7 @@ GameEvents.prototype.onBeforeSelectGame = function() {
 
 // OK
 GameEvents.prototype.onGameOver = function() {
-	console.log('Game fuckin\' over');
+	console.log('Game over');
 };
 
 // OK
