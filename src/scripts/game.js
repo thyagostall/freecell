@@ -310,6 +310,8 @@ function Game(canvasId, gameEvents) {
 	}
 }
 
+var memento = new Memento();
+
 var gameEvents = new GameEvents();
 var game = new Game('#cardgame', gameEvents);
 game.init();

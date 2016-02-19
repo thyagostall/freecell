@@ -52,7 +52,7 @@ GameEvents.prototype.doGameOver = function() {
 	if (this.onGameOver !== undefined) {
 		this.onGameOver();
 	}	
-}
+};
 
 // OK
 GameEvents.prototype.doAskCardQuantityToMove = function(acceptableStreak, destination) {
@@ -61,7 +61,7 @@ GameEvents.prototype.doAskCardQuantityToMove = function(acceptableStreak, destin
 	} else {
 		this.game.finishMovement(acceptableStreak, destination);
 	}
-}
+};
 
 
 // OK
@@ -76,7 +76,7 @@ GameEvents.prototype.onMovementNotAllowed = function() {
 
 // OK
 GameEvents.prototype.onStateChange = function(hash) {
-	$('#game-state').val(hash);
+	memento.addState(hash);
 };
 
 // OK

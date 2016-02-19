@@ -1,6 +1,6 @@
 var gulp = require('gulp'),
 	connect = require('gulp-connect'),
-	eslint = require('gulp-eslint'),
+	// eslint = require('gulp-eslint'),
 	concat = require('gulp-concat'),
 	htmlreplace = require('gulp-html-replace');
 
@@ -27,7 +27,7 @@ gulp.task('styles', function() {
 });
 
 gulp.task('build', function() {
-	gulp.src([sourceDir + '**/utility.js', sourceDir + '**/game_events.js', sourceDir + '**/*.js'])
+	gulp.src([sourceDir + '**/utility.js', sourceDir + '**/game_events.js', sourceDir + '**/memento.js', sourceDir + '**/*.js'])
 		.pipe(concat('main.js'))
 		.pipe(gulp.dest(distDir))
 		.pipe(connect.reload());

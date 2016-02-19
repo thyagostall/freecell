@@ -32,8 +32,10 @@
 
       <div>
         <p>Current state:</p>
-        <textarea rows="4" cols="103" id="game-state"></textarea>
-        <button type="button" onclick="game.setGameHash($('#game-state').val());">Set State</button>
+        <textarea rows="4" cols="103" id="game-hash"></textarea>
+        <button type="button" onclick="$('#game-hash').val(memento.states[memento.previous()]);">Previous</button>        
+        <button type="button" onclick="$('#game-hash').val(memento.states[memento.next()]);">Next</button>
+        <button type="button" onclick="game.setGameHash($('#game-hash').val());">Set State</button>
       </div>
     </div>
 
@@ -43,6 +45,8 @@
 
     <!-- build:js -->
     <script src="scripts/game_events.js"></script>    
+    <script src="scripts/memento.js"></script>        
+    <script src="scripts/king.js"></script>    
     <script src="scripts/utility.js"></script>    
     <script src="scripts/card.js"></script>
     <script src="scripts/stack.js"></script>
