@@ -48,19 +48,19 @@ As the **Windows** game has. This version also has three ways of starting a game
 
     GameEvents.prototype.onCardQuantityChange = function(quantity)
 
-> Called when the card quantity in game has changed. It happens either when the player move a card to a home cell or when a new game is started:
+> Called when the card quantity in game has changed. It happens either when the player move a card to a home cell or when a new game is started.
 
     GameEvents.prototype.onMovementNotAllowed = function();
 
-> Called when the user performs a movement which is not allowed in the game's rules:
+> Called when the user performs a movement which is not allowed in the game's rules.
 
     GameEvents.prototype.onNumberChange = function(number);
 
-> Called when the game's number has changed. Always when a new game is started. The `number` parameter is the game's seed number:
+> Called when the game's number has changed. Always when a new game is started. The `number` parameter is the game's seed number.
 
     GameEvents.prototype.onBeforeSelectGame = function();
 
-> Called when the user selects a game. This method is where the code which asks the user what game they want to play is placed. At the end of this block of code, the method `this.doSelectGame(gameNumber)` must be called:
+> Called when the user selects a game. This method is where the code which asks the user what game they want to play is placed. At the end of this block of code, the method `this.doSelectGame(gameNumber)` must be called.
 
     GameEvents.prototype.onGameOver = function(won);
 
