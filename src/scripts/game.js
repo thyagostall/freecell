@@ -16,7 +16,7 @@ function Game(canvasId, gameEvents) {
 
 	var _events = gameEvents;
 	var _running = false;
-	var _win = true;
+	var _win = false;
 
 	var _countFreeCells = function() {
 		var result = 0;
