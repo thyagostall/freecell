@@ -23,6 +23,7 @@ function KingIcon(assets, context, x, y) {
 	this._x = x;
 	this._y = y;
 	this._image = assets.images['king'];
+	this._imageWin = assets.images['king_win'];	
 }
 
 KingIcon.prototype._updateKingImpl = function(type) {
@@ -47,3 +48,14 @@ KingIcon.prototype.updateLeft = function() {
 KingIcon.prototype.updateRight = function() {
 	this._updateKingImpl('right');
 };
+
+KingIcon.prototype.win = function() {
+	var context = this._context,
+		x = this._x,
+		y = this._y,
+		image = this._imageWin;
+
+	context.fillStyle = BACKGROUND_COLOR;
+	context.fillRect(x + 3, y + 3, 32, 32);
+	context.drawImage(image, 10, 105);
+}

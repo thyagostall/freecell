@@ -16,6 +16,7 @@ function Game(canvasId, gameEvents) {
 
 	var _events = gameEvents;
 	var _running = false;
+	var _win = true;
 
 	var _countFreeCells = function() {
 		var result = 0;
@@ -90,7 +91,7 @@ function Game(canvasId, gameEvents) {
 			_componentDict.push(_stacks[i]);
 		}
 
-		_this.draw();
+		_this.draw();		
 
 		_canvas.onmousemove = function(e) {
 			var x = e.offsetX;
@@ -113,7 +114,8 @@ function Game(canvasId, gameEvents) {
 
 			if (!_areThereAvailableMoves()) {
 				_running = false;
-				_events.doGameOver();
+				_win = false;
+				_events.doGameOver(false);
 				return;
 			}
 
@@ -137,6 +139,7 @@ function Game(canvasId, gameEvents) {
 		this.draw();
 
 		_running = true;
+		_win = false;
 	}
 
 	this.newRandomGame = function() {
@@ -240,6 +243,10 @@ function Game(canvasId, gameEvents) {
 		for (i = 0; i < _stacks.length; i++) {
 			_stacks[i].draw();
 		}
+
+		if (_win) {
+			_king.win();
+		}
 	};
 
 	this.setGameHash = function(hash) {
@@ -311,7 +318,14 @@ function Game(canvasId, gameEvents) {
 
 	var _setCardsInGame = function(cardsInGame) {
 		_cardsInGame = cardsInGame;
-		_events.doCardQuantityChange(cardsInGame);
+
+		if (_cardsInGame === 0) {
+			_running = false;
+			_win = true;
+			_events.doGameOver(true);
+		} else {
+			_events.doCardQuantityChange(cardsInGame);
+		}
 	}
 
 	this.getCardsInGame = function() {

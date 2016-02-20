@@ -48,9 +48,9 @@ GameEvents.prototype.doSelectGame = function(number) {
 };
 
 // OK
-GameEvents.prototype.doGameOver = function() {
+GameEvents.prototype.doGameOver = function(won) {
 	if (this.onGameOver !== undefined) {
-		this.onGameOver();
+		this.onGameOver(won);
 	}	
 };
 
@@ -92,8 +92,8 @@ GameEvents.prototype.onBeforeSelectGame = function() {
 };
 
 // OK
-GameEvents.prototype.onGameOver = function() {
-	console.log('Game over');
+GameEvents.prototype.onGameOver = function(won) {
+	console.log('Game over ' + won);
 };
 
 // OK
