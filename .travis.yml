@@ -2,5 +2,5 @@
 # node_js:
 #   - "0.12"
 # before_script:
-#   - npm install -g gulp gulp-concat gulp-connect gulp-html-replace
+#   - npm install
 # script: gulp
