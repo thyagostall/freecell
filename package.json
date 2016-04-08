@@ -6,7 +6,11 @@
     "gulp": "^3.9.0",
     "gulp-connect": "^2.3.1",
     "gulp-concat": "",
+<<<<<<< HEAD
     "gulp-html-replace": "^1.5.5",
+=======
+    "gulp-html-replace": "^1.5.5"
+>>>>>>> e8a2172ad2acfce42ff1a36fe928aed4d03397e0
     "gulp-install": "^0.6.0"
   },
   "engines": {
