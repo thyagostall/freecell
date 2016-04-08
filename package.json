@@ -4,10 +4,9 @@
     "autoprefixer": "^6.0.2",
     "chai": "^3.4.1",
     "gulp": "^3.9.0",
-    "gulp-concat": "",
     "gulp-connect": "^2.3.1",
-    "gulp-html-replace": "^1.5.5",
-    "gulp-install": "^0.6.0"
+    "gulp-concat": "",
+    "gulp-html-replace": "^1.5.5"
   },
   "engines": {
     "node": ">=0.10.0"
