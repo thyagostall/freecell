@@ -26,7 +26,7 @@
         <button type="button" onclick="game.setGameHash(memento.undo());">Undo</button>
         Cards Left: <span id="card-quantity">52</span>
         Game: <span id="game-number"></span>
-      </div>      
+      </div>
 
       <canvas id="cardgame">
       </canvas>
@@ -34,21 +34,26 @@
       <div>
         <p>Current state:</p>
         <textarea rows="4" cols="103" id="game-hash"></textarea>
-        <button type="button" onclick="$('#game-hash').val(memento.states[memento.previous()]);">Previous</button>        
+        <button type="button" onclick="$('#game-hash').val(memento.states[memento.previous()]);">Previous</button>
         <button type="button" onclick="$('#game-hash').val(memento.states[memento.next()]);">Next</button>
         <button type="button" onclick="game.setGameHash($('#game-hash').val());">Set State</button>
       </div>
     </div>
 
     <!-- build:vendor -->
-    <!-- endbuild -->    
+    <!-- endbuild -->
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
     <!-- build:js -->
-    <script src="scripts/game_events.js"></script>    
-    <script src="scripts/memento.js"></script>        
-    <script src="scripts/king.js"></script>    
-    <script src="scripts/utility.js"></script>    
+    <script src="scripts/game_events.js"></script>
+    <script src="scripts/developer_tools.js"></script>
+    <script src="scripts/assetloader.js"></script>
+    <script src="scripts/cell.js"></script>
+    <script src="scripts/freecell.js"></script>
+    <script src="scripts/homecell.js"></script>
+    <script src="scripts/memento.js"></script>
+    <script src="scripts/king.js"></script>
+    <script src="scripts/utility.js"></script>
     <script src="scripts/card.js"></script>
     <script src="scripts/stack.js"></script>
     <script src="scripts/game.js"></script>
